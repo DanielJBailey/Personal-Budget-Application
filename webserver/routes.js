@@ -1,14 +1,15 @@
-'use strict'
-const exGraphql = require('express-graphql')
-const graphqlSchema = require('./schema/schema.js')
-const path = require('path')
+'use strict';
+const exGraphql = require('express-graphql');
+const graphqlSchema = require('./schema/schema.js');
+const path = require('path');
+require('dotenv').config();
 
-module.exports = function (app, opts) {
+module.exports = function(app, opts) {
   // Setup routes, middleware, and handlers
   app.get('/', (req, res) => {
-    res.locals.name = 'Divvy React Challenge'
-    res.render('index')
-  })
+    res.locals.name = 'Divvy React Challenge';
+    res.render('index');
+  });
 
   // GraphQL routes
   app.use(
@@ -18,9 +19,9 @@ module.exports = function (app, opts) {
       graphiql: true,
       pretty: true
     })
-  )
+  );
 
   app.use(/(?!\/graphql)/, (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'))
-  })
-}
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  });
+};

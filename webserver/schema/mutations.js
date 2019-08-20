@@ -1,7 +1,15 @@
-const graphql = require('graphql')
-const { GraphQLObjectType, GraphQLString, GraphQLBoolean, GraphQLFloat } = graphql
-const { TransactionModel } = require('../data-models/Transaction')
-const TransactionType = require('./transaction-type')
+const graphql = require('graphql');
+const jwt = require('jsonwebtoken');
+const { GraphQLObjectType, GraphQLString, GraphQLBoolean, GraphQLFloat } = graphql;
+const { TransactionModel } = require('../data-models/Transaction');
+const TransactionType = require('./model-types/user-type');
+const UserType = require('./model-types/user-type');
+const { UserModel } = require('../data-models/User');
+
+const createToken = (user, secret, expiresIn) => {
+  const { username } = user;
+  return jwt.sign({ username }, secret, { expiresIn });
+};
 
 const mutation = new GraphQLObjectType({
   name: 'Mutation',
@@ -17,11 +25,27 @@ const mutation = new GraphQLObjectType({
         amount: { type: GraphQLFloat }
       },
       /* eslint-disable-next-line camelcase */
-      resolve (parentValue, { user_id, description, merchant_id, debit, credit, amount }) {
-        return (new TransactionModel({ user_id, description, merchant_id, debit, credit, amount })).save()
+      resolve(parentValue, { user_id, description, merchant_id, debit, credit, amount }) {
+        return new TransactionModel({ user_id, description, merchant_id, debit, credit, amount }).save();
+      }
+    },
+    addUser: {
+      type: UserType,
+      args: {
+        username: { type: GraphQLString },
+        password: { type: GraphQLString }
+      },
+      resolve: async (parent, { username, password }) => {
+        const user = await UserModel.findOne({ username });
+        if (user) {
+          throw new Error('Username already exists.');
+        } else {
+          const newUser = await new UserModel({ username, password }).save();
+          return { token: createToken(newUser, process.env.SECRET, '1hr') };
+        }
       }
     }
   }
-})
+});
 
-module.exports = mutation
+module.exports = mutation;

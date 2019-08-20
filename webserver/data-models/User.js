@@ -1,9 +1,8 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const { model, Schema, SchemaTypes } = require('mongoose');
 const bcrypt = require('bcrypt');
 
 const UserSchema = new Schema({
-  _id: { type: Schema.Types.ObjectId },
+  id: { type: SchemaTypes.ObjectId },
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   budgets: {
@@ -23,10 +22,10 @@ UserSchema.pre('save', function(next) {
   });
 });
 
-const model = mongoose.model('User', UserSchema);
+const UserModel = model('User', UserSchema);
 
 module.exports = {
-  UserModel: model,
+  UserModel,
   UserSchema,
   default: UserSchema
 };

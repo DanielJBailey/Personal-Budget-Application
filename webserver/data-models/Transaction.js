@@ -1,4 +1,4 @@
-const { model, Schema, SchemaTypes } = require('mongoose')
+const { model, Schema, SchemaTypes } = require('mongoose');
 
 const TransactionSchema = new Schema({
   id: { type: SchemaTypes.ObjectId },
@@ -8,12 +8,12 @@ const TransactionSchema = new Schema({
   debit: { type: Boolean, default: null },
   description: { type: String, default: null },
   merchant_id: { type: String, default: null }
-})
+});
 
-const TransactionModel = model('transaction', TransactionSchema)
+const TransactionModel = model('transaction', TransactionSchema);
 
 module.exports = {
   TransactionModel,
   TransactionSchema,
   default: TransactionSchema
-}
+};

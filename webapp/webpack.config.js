@@ -1,9 +1,9 @@
-const path = require('path')
-const root = process.cwd()
-const { CleanWebpackPlugin } = require('clean-webpack-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+const path = require('path');
+const root = process.cwd();
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const outputDirectory = path.join(root, '..', 'webserver', 'public')
+const outputDirectory = path.join(root, '..', 'webserver', 'public');
 
 let plugins = [
   new CleanWebpackPlugin(),
@@ -12,12 +12,12 @@ let plugins = [
     title: 'Divvy Coding Challenge',
     appMountId: 'react-app'
   })
-]
+];
 
-const JS_FILE_REGEX = /\.(js|jsx)$/
-const IMAGE_FILE_REGEX = /\.(jpg|jpeg|png|svg|bmp)$/
-const NODE_MODULES_DIR_REGEX = /\/node_modules\/(?!apollo-.*?|react-apollo)/
-const GRAPH_QL_FILE_REGEX = /\.(graphql|gql)$/
+const JS_FILE_REGEX = /\.(js|jsx)$/;
+const IMAGE_FILE_REGEX = /\.(jpg|jpeg|png|svg|bmp)$/;
+const NODE_MODULES_DIR_REGEX = /\/node_modules\/(?!apollo-.*?|react-apollo)/;
+const GRAPH_QL_FILE_REGEX = /\.(graphql|gql)$/;
 
 const babelConfig = {
   test: JS_FILE_REGEX,
@@ -25,26 +25,31 @@ const babelConfig = {
   use: {
     loader: 'babel-loader'
   }
-}
+};
 
 const imageUrlConfig = {
   test: IMAGE_FILE_REGEX,
   use: 'url-loader?limit=25000'
-}
+};
 
 const eslintConfig = {
   test: JS_FILE_REGEX,
-  use: 'eslint-loader',
   enforce: 'pre',
+  use: {
+    loader: 'eslint-loader',
+    options: {
+      fix: true
+    }
+  },
   // we want eslint to ignore @divvy/skylab
   exclude: /\/node_modules\/(?!apollo-.*?|react-apollo)/
-}
+};
 
 const graphQlConfig = {
   test: GRAPH_QL_FILE_REGEX,
   exclude: NODE_MODULES_DIR_REGEX,
   loader: 'graphql-tag/loader'
-}
+};
 
 const rules = [
   babelConfig,
@@ -56,7 +61,7 @@ const rules = [
     type: 'javascript/auto'
   },
   graphQlConfig
-]
+];
 
 const config = {
   context: root,
@@ -90,6 +95,6 @@ const config = {
   resolve: {
     extensions: ['.mjs', '.js', '.jsx', '.json']
   }
-}
+};
 
-module.exports = config
+module.exports = config;
