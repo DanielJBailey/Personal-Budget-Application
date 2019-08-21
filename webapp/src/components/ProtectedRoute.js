@@ -17,11 +17,11 @@ export const ProtectedRoute = ({ isAuthenticated, component: Component, ...rest 
 )
 
 const mapStateToProps = state => {
-  return { isAuthenticated: !!state.auth.id }
+  return { isAuthenticated: state.auth.id }
 }
 
 ProtectedRoute.propTypes = {
-  isAuthenticated: propTypes.boolean,
+  isAuthenticated: propTypes.string,
   component: propTypes.object,
   location: propTypes.object
 }

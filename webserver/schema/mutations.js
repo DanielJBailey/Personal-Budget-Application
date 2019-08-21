@@ -54,12 +54,13 @@ const mutation = new GraphQLObjectType({
         token: { type: GraphQLString }
       },
       resolve: async (parents, { username, password, token }) => {
+        console.log(token);
         // if request has token already, verify and return logged in user if valid
         if (token) {
           const authorized = await jwt.verify(token, process.env.SECRET);
           if (authorized) {
             const user = await UserModel.findOne({ username: authorized.username });
-            return { id: user._id, username: user.username };
+            return { token: token, id: user._id, username: user.username };
           } else throw new Error('Unauthorized.');
         } else {
           // else just sign in user

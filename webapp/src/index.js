@@ -6,12 +6,15 @@ import { client } from './network/apollo-client'
 import { Provider } from 'react-redux'
 import store from './store'
 import ErrorBoundary from './ErrorBoundary'
+import FetchUser from './components/FetchUser'
 
 ReactDOM.render(
   <Provider store={store}>
     <ApolloProvider client={client}>
       <ErrorBoundary>
-        <AppRouter />
+        <FetchUser>
+          <AppRouter />
+        </FetchUser>
       </ErrorBoundary>
     </ApolloProvider>
   </Provider>,
