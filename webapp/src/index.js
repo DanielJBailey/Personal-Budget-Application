@@ -3,14 +3,17 @@ import ReactDOM from 'react-dom'
 import AppRouter from './routes'
 import { ApolloProvider } from 'react-apollo'
 import { client } from './network/apollo-client'
+import { Provider } from 'react-redux'
+import store from './store'
+import ErrorBoundary from './ErrorBoundary'
 
 ReactDOM.render(
-  (
-    <div data-app-init=''>
-      <ApolloProvider client={client}>
+  <Provider store={store}>
+    <ApolloProvider client={client}>
+      <ErrorBoundary>
         <AppRouter />
-      </ApolloProvider>
-    </div>
-  ),
+      </ErrorBoundary>
+    </ApolloProvider>
+  </Provider>,
   document.getElementById('react-app')
 )
