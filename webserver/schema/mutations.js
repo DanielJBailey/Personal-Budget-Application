@@ -42,7 +42,7 @@ const mutation = new GraphQLObjectType({
           throw new Error('Username already exists.');
         } else {
           const newUser = await new UserModel({ username, password }).save();
-          return { token: createToken({ userId: newUser.id, username: newUser.username }, process.env.SECRET, '1hr') };
+          return { token: createToken(newUser, process.env.SECRET, '1hr') };
         }
       }
     },
@@ -53,28 +53,17 @@ const mutation = new GraphQLObjectType({
         password: { type: GraphQLString },
         token: { type: GraphQLString }
       },
-      resolve: async (parents, { username, password, token }) => {
-        console.log(token);
-        // if request has token already, verify and return logged in user if valid
-        if (token) {
-          const authorized = await jwt.verify(token, process.env.SECRET);
-          if (authorized) {
-            const user = await UserModel.findOne({ username: authorized.username });
-            return { token: token, id: user._id, username: user.username };
-          } else throw new Error('Unauthorized.');
+      resolve: async (parents, { username, password }) => {
+        const user = await UserModel.findOne({ username });
+        if (!user) {
+          throw new Error('There is currently no account associated with that username.');
         } else {
-          // else just sign in user
-          const user = await UserModel.findOne({ username });
-          if (!user) {
-            throw new Error('There is currently no account associated with that username.');
+          const isEqual = await bcrypt.compare(password, user.password);
+          if (!isEqual) {
+            throw new Error('Password is incorrect!');
           } else {
-            const isEqual = await bcrypt.compare(password, user.password);
-            if (!isEqual) {
-              throw new Error('Password is incorrect!');
-            } else {
-              const token = createToken({ userId: user.id, username: user.username }, process.env.SECRET, '1hr');
-              return { token, id: user._id, username: user.username };
-            }
+            const token = createToken(user, process.env.SECRET, '1hr');
+            return { token, id: user._id, username: user.username };
           }
         }
       }

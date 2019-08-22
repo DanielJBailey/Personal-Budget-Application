@@ -10,9 +10,9 @@ function AppRouter () {
     <Suspense fallback='Loading...'>
       <Router>
         <Switch>
-          <ProtectedRoute component={Home} exact path='/' />
-          <Route component={Register} exact path='/register' />
-          <Route component={Login} exact path='/login' />
+          <ProtectedRoute component={Home} exact path='/home' />
+          <Route component={Register} path='/register' />
+          <Route component={Login} path='/login' />
           <ProtectedRoute component={Home} />
         </Switch>
       </Router>

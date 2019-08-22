@@ -10,3 +10,11 @@ export const SIGNIN_USER = gql`
     }
   }
 `
+export const GET_USER = gql`
+  query getUser($token: String!) {
+    getUser(token: $token) {
+      _id
+      username
+    }
+  }
+`
