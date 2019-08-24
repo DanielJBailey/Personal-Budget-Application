@@ -1,10 +1,19 @@
 import React from 'react'
-import { connect } from 'react-redux'
+import { Link, withRouter, Redirect } from 'react-router-dom'
+import { useAuth } from '../context/auth'
 
-const Login = () => <>Login</>
+const Login = history => {
+  const { user } = useAuth()
 
-const mapStateToProps = state => {
-  return { isAuthenticated: state.auth.id !== undefined }
+  if (user && user._id !== null) {
+    return <Redirect to='/' />
+  }
+
+  return (
+    <>
+      <Link to='/'>Home</Link>Login
+    </>
+  )
 }
 
-export default connect(mapStateToProps)(Login)
+export default withRouter(Login)

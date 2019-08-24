@@ -1,51 +1,65 @@
 import React, { useState, useEffect } from 'react'
-import { connect } from 'react-redux'
 import propTypes from 'prop-types'
-import { Query } from 'react-apollo'
+import { useLazyQuery } from '@apollo/react-hooks'
 import { GET_USER } from '../queries/index'
-import { loginUser, logoutUser } from '../reducers/auth'
+import { useAuth } from '../context/auth'
 
-export const FetchUser = ({ dispatch, children }) => {
-  const [token, setToken] = useState(undefined)
+export const FetchUser = ({ children }) => {
+  const [token, setToken] = useState('')
+  const [tokenFetched, setTokenFetched] = useState(false)
+  const [getUserData, { data }] = useLazyQuery(GET_USER)
+  const [finished, setFinished] = useState(false)
+  const [userSet, setUserSet] = useState(false)
+  const { user, setUser } = useAuth()
 
   useEffect(() => {
+    async function getToken () {
+      let token = await window.localStorage.getItem('budget-auth')
+      setToken(token)
+      setTokenFetched(true)
+    }
     getToken()
   }, [])
 
-  const getToken = async () => {
-    const token = await window.localStorage.getItem('budget-auth')
-    setToken(token)
-  }
-
-  const setUser = async data => {
-    if (data) {
-      const { username, _id: id } = data
-      if (username && id) {
-        dispatch(loginUser({ id, username }))
-      } else {
-        await window.localStorage.removeItem('budget-auth')
-        dispatch(logoutUser())
+  useEffect(() => {
+    if (tokenFetched) {
+      if (token === '' || 'null') {
+        setFinished(true)
+        setUserSet(true)
+        setUser({})
       }
     }
-  }
+  }, [tokenFetched])
 
-  return (
-    <>
-      {token && (
-        <Query query={GET_USER} variables={{ token: token }}>
-          {data => {
-            setUser(data.data.getUser)
-            return <>{children}</>
-          }}
-        </Query>
-      )}
-    </>
-  )
+  useEffect(() => {
+    console.log(token)
+    async function fetchUserData (userToken) {
+      await getUserData({ variables: { token: userToken } })
+    }
+    if ((token !== '' || 'null') && tokenFetched) {
+      console.log('getting data')
+      fetchUserData(token)
+    }
+  }, [tokenFetched])
+
+  useEffect(() => {
+    if ((data !== {} || undefined) && (token !== '' || 'null')) {
+      setUser(data.getUser)
+      setUserSet(true)
+    }
+  }, [data])
+
+  useEffect(() => {
+    if (userSet && user) {
+      setFinished(true)
+    }
+  }, [userSet, user])
+
+  return <>{finished ? children : null}</>
 }
 
 FetchUser.propTypes = {
-  dispatch: propTypes.func,
   children: propTypes.object
 }
 
-export default connect()(FetchUser)
+export default FetchUser

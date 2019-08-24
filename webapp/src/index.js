@@ -1,22 +1,21 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { BrowserRouter as Router } from 'react-router-dom'
 import AppRouter from './routes'
-import { ApolloProvider } from 'react-apollo'
+import { ApolloProvider } from '@apollo/react-hooks'
 import { client } from './network/apollo-client'
-import { Provider } from 'react-redux'
-import store from './store'
 import ErrorBoundary from './ErrorBoundary'
-import FetchUser from './components/FetchUser'
+import { UserProvider } from './context/auth'
 
 ReactDOM.render(
-  <Provider store={store}>
-    <ApolloProvider client={client}>
-      <ErrorBoundary>
-        <FetchUser>
+  <UserProvider>
+    <Router>
+      <ApolloProvider client={client}>
+        <ErrorBoundary>
           <AppRouter />
-        </FetchUser>
-      </ErrorBoundary>
-    </ApolloProvider>
-  </Provider>,
+        </ErrorBoundary>
+      </ApolloProvider>
+    </Router>
+  </UserProvider>,
   document.getElementById('react-app')
 )
