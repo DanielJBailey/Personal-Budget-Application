@@ -1,24 +1,25 @@
 import React from 'react'
-import { Link, withRouter } from 'react-router-dom'
-import { useAuth } from '../context/auth'
+import { withRouter } from 'react-router-dom'
 import propTypes from 'prop-types'
+import styled from '@emotion/styled'
 
 const Home = ({ history }) => {
-  const { user, setUser } = useAuth()
-
-  const logOutUser = async () => {
-    await window.localStorage.removeItem('budget-auth')
-    await setUser({})
-    history.push('/login')
-  }
-
   return (
-    <>
-      <Link to='/login'>Login</Link>Home Page {user.username}
-      <button onClick={() => logOutUser()}>Logout</button>
-    </>
+    <Container>
+      <h1>Dashboard</h1>
+    </Container>
   )
 }
+
+const Container = styled.div`
+  min-height: 100vh;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`
 
 export default withRouter(Home)
 
