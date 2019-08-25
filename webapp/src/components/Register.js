@@ -33,9 +33,6 @@ const Register = ({ history }) => {
     if (password !== passwordConfirmation) {
       setErrors([...errors, { message: 'Passwords do not match.' }])
     }
-    if (password.length <= 7) {
-      setErrors([...errors, { message: 'Password must be atleast 8 characters.' }])
-    }
     if (errors.length > 0) {
       setShowErrors(true)
       return false
