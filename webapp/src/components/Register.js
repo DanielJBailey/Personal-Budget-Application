@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { withRouter } from 'react-router-dom'
-import styled from '@emotion/styled'
+import { withRouter, Link } from 'react-router-dom'
 import { Mutation } from 'react-apollo'
 import { SIGNUP_USER } from '../queries/index'
 import propTypes from 'prop-types'
 import { useAuth } from '../context/auth'
+import { Form, Container, Submit, Error } from './Login'
 
 const initialState = {
   username: '',
@@ -62,7 +62,9 @@ const Register = ({ history }) => {
   }
 
   return (
-    <>
+    <Container>
+      <h1>Register</h1>
+      <h2>{"You won't regret this decision."}</h2>
       <Mutation mutation={SIGNUP_USER} variables={formValues}>
         {(signUpUser, { data, loading, error }) => {
           if (error) {
@@ -101,27 +103,18 @@ const Register = ({ history }) => {
                   required
                   type='password'
                 />
-                <button type='submit'>Submit</button>
+                <Submit type='submit'>Submit</Submit>
               </Form>
             </>
           )
         }}
       </Mutation>
-    </>
+      <h3>
+        {'Already have an account?'} <Link to='/login'>Sign in</Link>
+      </h3>
+    </Container>
   )
 }
-
-const Form = styled.form``
-
-const Error = styled.div`
-  background-color: rgba(0, 0, 0, 0.1);
-  color: maroon;
-  width: 450px;
-  text-align: center;
-  padding: 16px;
-  border-radius: 5px;
-  margin: 0 0 24px 0;
-`
 
 export default withRouter(Register)
 

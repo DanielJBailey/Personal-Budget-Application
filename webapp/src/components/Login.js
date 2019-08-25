@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { withRouter } from 'react-router-dom'
+import { withRouter, Link } from 'react-router-dom'
 import styled from '@emotion/styled'
 import { Mutation } from 'react-apollo'
 import { SIGNIN_USER } from '../queries/index'
@@ -46,7 +46,9 @@ const Login = ({ history }) => {
   }
 
   return (
-    <>
+    <Container>
+      <h1>Sign In</h1>
+      <h2>Welcome back, we missed you.</h2>
       <Mutation mutation={SIGNIN_USER} variables={formValues}>
         {(signInUser, { data, loading, error }) => {
           if (error) {
@@ -63,7 +65,7 @@ const Login = ({ history }) => {
                   autoComplete='username'
                   name='username'
                   onChange={handleChange}
-                  placeholder='Username:'
+                  placeholder='Username'
                   required
                 />
                 <input
@@ -71,30 +73,117 @@ const Login = ({ history }) => {
                   autoComplete='password'
                   name='password'
                   onChange={handleChange}
-                  placeholder='Password:'
+                  placeholder='Password'
                   required
                   type='password'
                 />
-                <button type='submit'>Submit</button>
+                <Submit type='submit'>Submit</Submit>
               </Form>
             </>
           )
         }}
       </Mutation>
-    </>
+      <h3>
+        {"Don't have an account?"} <Link to='/register'>Sign up</Link>
+      </h3>
+    </Container>
   )
 }
 
-const Form = styled.form``
+export const Submit = styled.button`
+  width: 100%;
+  padding: 16px;
+  background-color: #333;
+  color: white;
+  margin-top: 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  &:hover {
+    opacity: 0.9;
+  }
+`
 
-const Error = styled.div`
-  background-color: rgba(0, 0, 0, 0.1);
-  color: maroon;
-  width: 450px;
+export const Container = styled.div`
+  height: 100%;
+  min-height: 100vh;
+  width: 100%;
+  background-color: #f3f3f3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1em;
+
+  a {
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    z-index: 3;
+    &::after {
+      width: 100%;
+      content: '';
+      display: block;
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      height: 5px;
+      z-index: 1;
+      background-color: #1dd1a1;
+      opacity: 0.4;
+    }
+    &:hover::after {
+      height: 10px;
+      opacity: 0.5;
+    }
+  }
+
+  h1 {
+    font-size: 48px;
+    font-weight: bold;
+  }
+  h2 {
+    font-size: 14px;
+    font-weight: normal;
+    margin-bottom: 24px;
+  }
+
+  h3 {
+    font-size: 14px;
+    font-weight: normal;
+    margin-top: 12px;
+  }
+`
+
+export const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 350px;
+
+  input {
+    padding: 16px;
+    border: none;
+    background-color: white;
+    font-size: 16px;
+    border: 1px solid #dcdcdc;
+    border-radius: 5px;
+    &:not(:first-of-type) {
+      margin-top: 12px;
+    }
+  }
+`
+
+export const Error = styled.div`
+  background-color: #ffe0df;
+  color: #ff0000;
+  width: 350px;
   text-align: center;
   padding: 16px;
   border-radius: 5px;
   margin: 0 0 24px 0;
+  font-size: 14px;
 `
 
 export default withRouter(Login)
