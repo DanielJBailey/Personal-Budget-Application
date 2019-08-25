@@ -14,36 +14,29 @@ export const FetchUser = ({ children }) => {
 
   useEffect(() => {
     async function getToken () {
-      let token = await window.localStorage.getItem('budget-auth')
-      setToken(token)
-      setTokenFetched(true)
+      const hasToken = await window.localStorage.hasOwnProperty('budget-auth')
+      if (!hasToken) {
+        setFinished(true)
+        setUserSet(true)
+        setUser({})
+      } else {
+        const token = await window.localStorage.getItem('budget-auth')
+        setToken(token)
+        setTokenFetched(true)
+      }
     }
     getToken()
   }, [])
 
   useEffect(() => {
-    if (tokenFetched) {
-      if (token === '' || 'null') {
-        setFinished(true)
-        setUserSet(true)
-        setUser({})
-      }
-    }
-  }, [tokenFetched])
-
-  useEffect(() => {
-    console.log(token)
     async function fetchUserData (userToken) {
       await getUserData({ variables: { token: userToken } })
     }
-    if ((token !== '' || 'null') && tokenFetched) {
-      console.log('getting data')
-      fetchUserData(token)
-    }
+    fetchUserData(token)
   }, [tokenFetched])
 
   useEffect(() => {
-    if ((data !== {} || undefined) && (token !== '' || 'null')) {
+    if (data && data.getUser) {
       setUser(data.getUser)
       setUserSet(true)
     }

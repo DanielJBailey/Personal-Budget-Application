@@ -1,17 +1,10 @@
 import React from 'react'
-import { Link, withRouter, Redirect } from 'react-router-dom'
-import { useAuth } from '../context/auth'
+import { Link, withRouter } from 'react-router-dom'
 
-const Login = history => {
-  const { user } = useAuth()
-
-  if (user && user._id !== null) {
-    return <Redirect to='/' />
-  }
-
+const Login = () => {
   return (
     <>
-      <Link to='/'>Home</Link>Login
+      <Link to='/'>Home</Link>Login Page
     </>
   )
 }

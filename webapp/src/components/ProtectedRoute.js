@@ -9,7 +9,7 @@ export const ProtectedRoute = ({ component: Component, ...rest }) => {
     <Route
       {...rest}
       render={props =>
-        user && user._id !== null ? (
+        user._id ? (
           <Component {...props} />
         ) : (
           <Redirect
