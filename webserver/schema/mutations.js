@@ -34,7 +34,8 @@ const mutation = new GraphQLObjectType({
       type: UserType,
       args: {
         username: { type: GraphQLString },
-        password: { type: GraphQLString }
+        password: { type: GraphQLString },
+        _id: { type: GraphQLString }
       },
       resolve: async (parent, { username, password }) => {
         const user = await UserModel.findOne({ username });
@@ -42,7 +43,12 @@ const mutation = new GraphQLObjectType({
           throw new Error('Username already exists.');
         } else {
           const newUser = await new UserModel({ username, password }).save();
-          return { token: createToken(newUser, process.env.SECRET, '1hr') };
+          console.log(newUser);
+          return {
+            token: createToken(newUser, process.env.SECRET, '1hr'),
+            _id: newUser._id,
+            username: newUser.username
+          };
         }
       }
     },
@@ -63,7 +69,7 @@ const mutation = new GraphQLObjectType({
             throw new Error('Password is incorrect!');
           } else {
             const token = createToken(user, process.env.SECRET, '1hr');
-            return { token, id: user._id, username: user.username };
+            return { token, _id: user._id, username: user.username };
           }
         }
       }

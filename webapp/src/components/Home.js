@@ -8,7 +8,7 @@ const Home = ({ history }) => {
 
   const logOutUser = async () => {
     await window.localStorage.removeItem('budget-auth')
-    setUser({})
+    await setUser({})
     history.push('/login')
   }
 

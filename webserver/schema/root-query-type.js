@@ -23,7 +23,6 @@ const RootQuery = new GraphQLObjectType({
               return ({ id, username } = user);
             }
           } catch (error) {
-            console.log(error.message);
             return { id: undefined, username: undefined };
           }
         }

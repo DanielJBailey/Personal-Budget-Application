@@ -2,18 +2,21 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter as Router } from 'react-router-dom'
 import AppRouter from './routes'
-import { ApolloProvider } from '@apollo/react-hooks'
+import { ApolloProvider as HooksProvider } from '@apollo/react-hooks'
 import { client } from './network/apollo-client'
 import ErrorBoundary from './ErrorBoundary'
 import { UserProvider } from './context/auth'
+import { ApolloProvider } from 'react-apollo'
 
 ReactDOM.render(
   <UserProvider>
     <Router>
       <ApolloProvider client={client}>
-        <ErrorBoundary>
-          <AppRouter />
-        </ErrorBoundary>
+        <HooksProvider client={client}>
+          <ErrorBoundary>
+            <AppRouter />
+          </ErrorBoundary>
+        </HooksProvider>
       </ApolloProvider>
     </Router>
   </UserProvider>,
