@@ -6,19 +6,22 @@ import styled from '@emotion/styled'
 const Home = ({ history }) => {
   return (
     <Container>
-      <h1>Dashboard</h1>
+      <h1>January - 2019</h1>
     </Container>
   )
 }
 
 const Container = styled.div`
-  min-height: 100vh;
+  min-height: calc(100vh - 100px);
   height: 100%;
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
+  padding: 2em 1em;
+  max-width: 1140px;
+  margin: 0 auto;
 `
 
 export default withRouter(Home)

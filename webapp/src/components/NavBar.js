@@ -64,9 +64,6 @@ const Navigation = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  position: absolute;
-  top: 0;
-  left: 0;
   background-color: white;
   border-bottom: 1px solid #dcdcdc;
   padding: 1.5em;
