@@ -29,3 +29,12 @@ export const GET_USER = gql`
     }
   }
 `
+
+export const GET_BUDGETS = gql`
+  query getBudgetsForUser($_id: String!) {
+    getBudgetsForUser(_id: $_id) {
+      _id
+      month
+    }
+  }
+`

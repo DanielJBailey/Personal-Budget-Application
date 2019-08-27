@@ -4,11 +4,7 @@ const bcrypt = require('bcrypt');
 const UserSchema = new Schema({
   id: { type: SchemaTypes.ObjectId },
   username: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  budgets: {
-    type: [Schema.Types.ObjectId],
-    ref: 'Budget'
-  }
+  password: { type: String, required: true }
 });
 
 UserSchema.pre('save', function(next) {
@@ -22,7 +18,7 @@ UserSchema.pre('save', function(next) {
   });
 });
 
-const UserModel = model('User', UserSchema);
+const UserModel = model('User', UserSchema, 'users');
 
 module.exports = {
   UserModel,

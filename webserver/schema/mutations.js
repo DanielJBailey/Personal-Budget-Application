@@ -3,6 +3,9 @@ const jwt = require('jsonwebtoken');
 const { GraphQLObjectType, GraphQLString, GraphQLBoolean, GraphQLFloat } = graphql;
 const { TransactionModel } = require('../data-models/Transaction');
 const TransactionType = require('./model-types/user-type');
+const { BudgetModel } = require('../data-models/Budget');
+
+const BudgetType = require('./model-types/budget-type');
 const UserType = require('./model-types/user-type');
 const { UserModel } = require('../data-models/User');
 const bcrypt = require('bcrypt');
@@ -15,6 +18,26 @@ const createToken = (user, secret, expiresIn) => {
 const mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
+    addBudget: {
+      type: BudgetType,
+      args: {
+        creator: { type: GraphQLString },
+        month: { type: GraphQLString }
+      },
+      resolve: async (parentValue, { creator, month }) => {
+        const budget = await BudgetModel.findOne({ month });
+        if (budget) {
+          throw new Error('Budget already exists for that month.');
+        } else {
+          const newBudget = await new BudgetModel({ month, creator }).save();
+          return {
+            _id: newBudget._id,
+            month: newBudget.month,
+            creator: newBudget.creator
+          };
+        }
+      }
+    },
     addTransaction: {
       type: TransactionType,
       args: {
@@ -43,7 +66,6 @@ const mutation = new GraphQLObjectType({
           throw new Error('Username already exists.');
         } else {
           const newUser = await new UserModel({ username, password }).save();
-          console.log(newUser);
           return {
             token: createToken(newUser, process.env.SECRET, '1hr'),
             _id: newUser._id,

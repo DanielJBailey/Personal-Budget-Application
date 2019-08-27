@@ -1,11 +1,14 @@
 const graphql = require('graphql');
 const TransactionType = require('./model-types/transaction-type');
+const BudgetType = require('./model-types/budget-type');
 const Transactions = require('../query-resolvers/transaction-resolvers.js');
 const UserType = require('./model-types/user-type');
 const { UserModel } = require('../data-models/User');
+const { BudgetModel } = require('../data-models/Budget');
+
 const jwt = require('jsonwebtoken');
 
-const { GraphQLBoolean, GraphQLFloat, GraphQLList, GraphQLObjectType, GraphQLString } = graphql;
+const { GraphQLBoolean, GraphQLFloat, GraphQLList, GraphQLObjectType, GraphQLString, GraphQLInputObjectType } = graphql;
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   fields: () => ({
@@ -20,12 +23,22 @@ const RootQuery = new GraphQLObjectType({
             const authorized = await jwt.verify(token, process.env.SECRET);
             if (authorized) {
               const user = await UserModel.findOne({ username: authorized.username });
-              return ({ id, username } = user);
+              return ({ id, username, budgets } = user);
             }
           } catch (error) {
-            return { id: undefined, username: undefined };
+            console.log(error);
           }
         }
+      }
+    },
+    getBudgetsForUser: {
+      type: new GraphQLList(BudgetType),
+      args: {
+        _id: { type: GraphQLString }
+      },
+      resolve: async (parent, { _id }) => {
+        const budgets = await BudgetModel.find({ creator: _id });
+        return budgets;
       }
     },
     transaction: {
