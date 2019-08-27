@@ -23,7 +23,7 @@ const RootQuery = new GraphQLObjectType({
             const authorized = await jwt.verify(token, process.env.SECRET);
             if (authorized) {
               const user = await UserModel.findOne({ username: authorized.username });
-              return ({ id, username, budgets } = user);
+              return ({ id, username } = user);
             }
           } catch (error) {
             console.log(error);

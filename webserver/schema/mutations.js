@@ -18,6 +18,17 @@ const createToken = (user, secret, expiresIn) => {
 const mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
+    deleteBudget: {
+      type: BudgetType,
+      args: {
+        creator: { type: GraphQLString },
+        _id: { type: GraphQLString }
+      },
+      resolve: async (parentValue, { creator, _id }) => {
+        await BudgetModel.findOneAndDelete({ _id, creator });
+        return { status: 'Budget was successfully deleted' };
+      }
+    },
     addBudget: {
       type: BudgetType,
       args: {
@@ -25,7 +36,7 @@ const mutation = new GraphQLObjectType({
         month: { type: GraphQLString }
       },
       resolve: async (parentValue, { creator, month }) => {
-        const budget = await BudgetModel.findOne({ month });
+        const budget = await BudgetModel.findOne({ creator, month });
         if (budget) {
           throw new Error('Budget already exists for that month.');
         } else {

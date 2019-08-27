@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import styled from '@emotion/styled'
+import { keyframes } from '@emotion/core'
 import { Mutation } from 'react-apollo'
 import { useAuth } from '../context/auth'
 import { ADD_BUDGET } from '../queries/index'
@@ -111,6 +112,17 @@ const NewBudgetForm = ({ setBudgets, closeForm, budgets }) => {
   )
 }
 
+const SlideUp = keyframes`
+  from {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+`
+
 const Close = styled.button`
   padding: 8px 16px;
   background-color: transparent;
@@ -165,15 +177,16 @@ const FormContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 3em;
+  padding: 100px 3em;
   background-color: white;
   border: 1px solid #dcdcdc;
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   text-align: center;
   position: relative;
+  animation: ${SlideUp} 0.25s linear;
   @media (max-width: 425px) {
-    padding: 2em 1em;
+    padding: 100px 1em;
   }
 `
 

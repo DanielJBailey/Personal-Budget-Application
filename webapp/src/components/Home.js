@@ -7,6 +7,7 @@ import styled from '@emotion/styled'
 import { useAuth } from '../context/auth'
 import NewBudgetForm from './NewBudgetForm'
 import { ScaleLoader } from 'react-spinners'
+import alert from 'sweetalert2'
 
 const Home = () => {
   const [getBudgets, { loading, data }] = useLazyQuery(GET_BUDGETS)
@@ -66,6 +67,24 @@ const Home = () => {
     setCurrentBudget(current)
   }
 
+  const handleDeleteConfirmm = () => {
+    alert
+      .fire({
+        title: 'Are you sure?',
+        text: `This will delete the budget for ${currentBudget.month}, and cannot be reverted!`,
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#333',
+        cancelButtonColor: '#ee5253',
+        confirmButtonText: 'Confirm'
+      })
+      .then(result => {
+        if (result.value) {
+          alert.fire('Deleted!', 'Your budget has been deleted.', 'success')
+        }
+      })
+  }
+
   return (
     <Container>
       {loading ? (
@@ -94,6 +113,10 @@ const Home = () => {
                       <i className='fas fa-plus icon' />
                       Create New Budget
                     </NewBudget>
+                    <Trash onClick={handleDeleteConfirmm}>
+                      <i className='far fa-trash-alt icon' />
+                      Trash Budget
+                    </Trash>
                   </ButtonContainer>
                 </HeaderContainer>
               )}
@@ -146,6 +169,7 @@ const NewBudget = styled.button`
   font-size: 14px;
   cursor: pointer;
   border-radius: 5px;
+  margin-right: 16px;
 
   .icon {
     margin-right: 8px;
@@ -153,6 +177,27 @@ const NewBudget = styled.button`
 
   &:hover {
     background-color: #333;
+    color: white;
+  }
+`
+
+const Trash = styled.button`
+  padding: 8px 16px;
+  height: 40px;
+  white-space: nowrap;
+  background-color: transparent;
+  border: 2px solid #ee5253;
+  color: #ee5253;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+
+  .icon {
+    margin-right: 8px;
+  }
+
+  &:hover {
+    background-color: #ee5253;
     color: white;
   }
 `
@@ -192,12 +237,21 @@ const HeaderContainer = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    justify-content: center;
+  }
 `
 const ButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    width: 100%;
+    margin-top: 24px;
+  }
 `
 
 const Container = styled.div`
