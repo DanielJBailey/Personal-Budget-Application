@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { useLazyQuery } from '@apollo/react-hooks'
-import propTypes from 'prop-types'
+// import propTypes from 'prop-types'
 import { GET_BUDGETS } from '../queries/index'
 import styled from '@emotion/styled'
 import { useAuth } from '../context/auth'
+import NewBudgetForm from './NewBudgetForm'
 
-const Home = ({ history }) => {
+const Home = () => {
   const [getBudgets, { data }] = useLazyQuery(GET_BUDGETS)
   const [budgets, setBudgets] = useState([])
   const [currentBudget, setCurrentBudget] = useState({})
@@ -27,7 +28,7 @@ const Home = ({ history }) => {
         delete budget.__typename
       })
       budgets.sort((a, b) => new Date(b.month) - new Date(a.month))
-      // setBudgets(budgets)
+      setBudgets(budgets)
     }
   }, [data])
 
@@ -59,34 +60,45 @@ const Home = ({ history }) => {
     }
   }
 
+  const handleMonthChange = e => {
+    let current = budgets.find(b => b._id === e.target.value)
+    setCurrentBudget(current)
+  }
+
   return (
     <Container>
-      {budgets.length > 0 && (
-        <HeaderContainer>
-          {currentBudget && renderMonth(currentBudget.month)}
-          <ButtonContainer>
-            <SelectMonth>
-              {options.map((o, i) => (
-                <option key={i} value={o.value}>
-                  {o.label}
-                </option>
-              ))}
-            </SelectMonth>
-            <NewBudget>
-              <i className='fas fa-plus icon' />
-              Create New Budget
-            </NewBudget>
-          </ButtonContainer>
-        </HeaderContainer>
-      )}
-      {budgets.length === 0 && (
-        <NoBudgetContainer>
-          <NoBudgets>You currently have no budgets to show.</NoBudgets>
-          <NewBudget>
-            <i className='fas fa-plus icon' />
-            Create New Budget
-          </NewBudget>
-        </NoBudgetContainer>
+      {addingBudget ? (
+        <NewBudgetForm budgets={budgets} closeForm={setAddingBudget} setBudgets={setBudgets} />
+      ) : (
+        <>
+          {budgets.length > 0 && (
+            <HeaderContainer>
+              {currentBudget && renderMonth(currentBudget.month)}
+              <ButtonContainer>
+                <SelectMonth onChange={handleMonthChange}>
+                  {options.map((o, i) => (
+                    <option key={i} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </SelectMonth>
+                <NewBudget onClick={() => setAddingBudget(true)}>
+                  <i className='fas fa-plus icon' />
+                  Create New Budget
+                </NewBudget>
+              </ButtonContainer>
+            </HeaderContainer>
+          )}
+          {budgets.length === 0 && (
+            <NoBudgetContainer>
+              <NoBudgets>You currently have no budgets to show.</NoBudgets>
+              <NewBudget onClick={() => setAddingBudget(true)}>
+                <i className='fas fa-plus icon' />
+                Create New Budget
+              </NewBudget>
+            </NoBudgetContainer>
+          )}
+        </>
       )}
     </Container>
   )
@@ -188,7 +200,3 @@ const Container = styled.div`
 `
 
 export default withRouter(Home)
-
-Home.propTypes = {
-  history: propTypes.object
-}

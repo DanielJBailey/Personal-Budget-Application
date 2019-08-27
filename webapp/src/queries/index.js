@@ -38,3 +38,13 @@ export const GET_BUDGETS = gql`
     }
   }
 `
+
+export const ADD_BUDGET = gql`
+  mutation($creator: String, $month: String) {
+    addBudget(creator: $creator, month: $month) {
+      _id
+      creator
+      month
+    }
+  }
+`
