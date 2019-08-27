@@ -77,7 +77,8 @@ const NewBudgetForm = ({ setBudgets, closeForm, budgets }) => {
         return (
           <FormContainer>
             <Close onClick={() => closeForm(false)}>
-              <i className='fas fa-times icon' />Cancel
+              <i className='fas fa-times icon' />
+              Cancel
             </Close>
             <h1>Create A New Budget</h1>
             {error && showErrors && renderErrors(error.graphQLErrors)}
@@ -167,8 +168,8 @@ const FormContainer = styled.div`
   padding: 3em;
   background-color: white;
   border: 1px solid #dcdcdc;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
-  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
   position: relative;
   @media (max-width: 425px) {

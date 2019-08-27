@@ -6,9 +6,10 @@ import { GET_BUDGETS } from '../queries/index'
 import styled from '@emotion/styled'
 import { useAuth } from '../context/auth'
 import NewBudgetForm from './NewBudgetForm'
+import { ScaleLoader } from 'react-spinners'
 
 const Home = () => {
-  const [getBudgets, { data }] = useLazyQuery(GET_BUDGETS)
+  const [getBudgets, { loading, data }] = useLazyQuery(GET_BUDGETS)
   const [budgets, setBudgets] = useState([])
   const [currentBudget, setCurrentBudget] = useState({})
   const [options, setOptions] = useState([])
@@ -67,36 +68,45 @@ const Home = () => {
 
   return (
     <Container>
-      {addingBudget ? (
-        <NewBudgetForm budgets={budgets} closeForm={setAddingBudget} setBudgets={setBudgets} />
+      {loading ? (
+        <NoBudgetContainer>
+          <p>Please wait while we load your information.</p>
+          <ScaleLoader color='#333' />
+        </NoBudgetContainer>
       ) : (
         <>
-          {budgets.length > 0 && (
-            <HeaderContainer>
-              {currentBudget && renderMonth(currentBudget.month)}
-              <ButtonContainer>
-                <SelectMonth onChange={handleMonthChange}>
-                  {options.map((o, i) => (
-                    <option key={i} value={o.value}>
-                      {o.label}
-                    </option>
-                  ))}
-                </SelectMonth>
-                <NewBudget onClick={() => setAddingBudget(true)}>
-                  <i className='fas fa-plus icon' />
-                  Create New Budget
-                </NewBudget>
-              </ButtonContainer>
-            </HeaderContainer>
-          )}
-          {budgets.length === 0 && (
-            <NoBudgetContainer>
-              <NoBudgets>You currently have no budgets to show.</NoBudgets>
-              <NewBudget onClick={() => setAddingBudget(true)}>
-                <i className='fas fa-plus icon' />
-                Create New Budget
-              </NewBudget>
-            </NoBudgetContainer>
+          {addingBudget ? (
+            <NewBudgetForm budgets={budgets} closeForm={setAddingBudget} setBudgets={setBudgets} />
+          ) : (
+            <>
+              {budgets.length > 0 && (
+                <HeaderContainer>
+                  {currentBudget && renderMonth(currentBudget.month)}
+                  <ButtonContainer>
+                    <SelectMonth onChange={handleMonthChange}>
+                      {options.map((o, i) => (
+                        <option key={i} value={o.value}>
+                          {o.label}
+                        </option>
+                      ))}
+                    </SelectMonth>
+                    <NewBudget onClick={() => setAddingBudget(true)}>
+                      <i className='fas fa-plus icon' />
+                      Create New Budget
+                    </NewBudget>
+                  </ButtonContainer>
+                </HeaderContainer>
+              )}
+              {budgets.length === 0 && (
+                <NoBudgetContainer>
+                  <NoBudgets>You currently have no budgets to show.</NoBudgets>
+                  <NewBudget onClick={() => setAddingBudget(true)}>
+                    <i className='fas fa-plus icon' />
+                    Create New Budget
+                  </NewBudget>
+                </NoBudgetContainer>
+              )}
+            </>
           )}
         </>
       )}
@@ -114,7 +124,11 @@ const NoBudgetContainer = styled.div`
   background-color: white;
   border: 1px solid #dcdcdc;
   border-radius: 5px;
-  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1);
+
+  p {
+    margin-bottom: 8px;
+  }
 `
 
 const NoBudgets = styled.p`
