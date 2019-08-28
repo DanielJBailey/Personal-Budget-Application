@@ -9,6 +9,7 @@ import { useAuth } from '../context/auth'
 import NewBudgetForm from './NewBudgetForm'
 import { ScaleLoader } from 'react-spinners'
 import alert from 'sweetalert2'
+import Categories from './Categories'
 
 const Home = () => {
   const [getBudgets, { loading, data }] = useLazyQuery(GET_BUDGETS)
@@ -102,36 +103,6 @@ const Home = () => {
             <NewBudgetForm budgets={budgets} closeForm={setAddingBudget} setBudgets={setBudgets} />
           ) : (
             <>
-              {budgets.length > 0 && (
-                <HeaderContainer>
-                  {currentBudget && renderMonth(currentBudget.month)}
-                  <ButtonContainer>
-                    <SelectMonth onChange={handleMonthChange}>
-                      {options.map((o, i) => (
-                        <option key={i} value={o.value}>
-                          {o.label}
-                        </option>
-                      ))}
-                    </SelectMonth>
-                    <NewBudget onClick={() => setAddingBudget(true)}>
-                      <i className='fas fa-plus icon' />
-                      Create New Budget
-                    </NewBudget>
-                    {currentBudget && (
-                      <Mutation mutation={DELETE_BUDGET} variables={{ creator: user._id, _id: currentBudget._id }}>
-                        {(deleteBudget, { loading }) => {
-                          return (
-                            <Trash onClick={() => handleDeleteConfirm(deleteBudget)}>
-                              <i className='far fa-trash-alt icon' />
-                              Trash Budget
-                            </Trash>
-                          )
-                        }}
-                      </Mutation>
-                    )}
-                  </ButtonContainer>
-                </HeaderContainer>
-              )}
               {budgets.length === 0 && (
                 <NoBudgetContainer>
                   <NoBudgets>You currently have no budgets to show.</NoBudgets>
@@ -141,6 +112,42 @@ const Home = () => {
                   </NewBudget>
                 </NoBudgetContainer>
               )}
+              {budgets.length > 0 && (
+                <>
+                  <HeaderContainer>
+                    {currentBudget && renderMonth(currentBudget.month)}
+                    <ButtonContainer>
+                      <SelectMonth onChange={handleMonthChange}>
+                        {options.map((o, i) => (
+                          <option key={i} value={o.value}>
+                            {o.label}
+                          </option>
+                        ))}
+                      </SelectMonth>
+                      <NewBudget onClick={() => setAddingBudget(true)}>
+                        <i className='fas fa-plus icon' />
+                        Create New Budget
+                      </NewBudget>
+                      {currentBudget && (
+                        <Mutation mutation={DELETE_BUDGET} variables={{ creator: user._id, _id: currentBudget._id }}>
+                          {deleteBudget => {
+                            return (
+                              <Trash onClick={() => handleDeleteConfirm(deleteBudget)}>
+                                <i className='far fa-trash-alt icon' />
+                                Trash Budget
+                              </Trash>
+                            )
+                          }}
+                        </Mutation>
+                      )}
+                    </ButtonContainer>
+                  </HeaderContainer>
+                  <BodyContainer>
+                    <BudgetContainer>{currentBudget && <Categories budget={currentBudget} />}</BudgetContainer>
+                    <StatsContainer>My Spending</StatsContainer>
+                  </BodyContainer>
+                </>
+              )}
             </>
           )}
         </>
@@ -148,6 +155,33 @@ const Home = () => {
     </Container>
   )
 }
+
+const BodyContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  margin-top: 24px;
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+`
+
+const BudgetContainer = styled.div`
+  flex: 2;
+  width: 100%;
+  margin-right: 24px;
+`
+
+const StatsContainer = styled.div`
+  flex: 1;
+  width: 100%;
+  min-height: 600px;
+  border: 1px solid #dcdcdc;
+  border-radius: 5px;
+  padding: 1em;
+`
 
 const NoBudgetContainer = styled.div`
   width: 100%;

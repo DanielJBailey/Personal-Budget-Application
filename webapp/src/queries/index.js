@@ -56,3 +56,24 @@ export const DELETE_BUDGET = gql`
     }
   }
 `
+export const GET_CATEGORY = gql`
+  query($budget_id: String, $user_id: String, $name: String) {
+    getCategory(budget_id: $budget_id, user_id: $user_id, name: $name) {
+      name
+      current_balance
+      starting_balance
+      description
+    }
+  }
+`
+export const GET_CATEGORIES = gql`
+  query($budget_id: String, $user_id: String) {
+    getCategories(budget_id: $budget_id, user_id: $user_id) {
+      name
+      current_balance
+      starting_balance
+      description
+      _id
+    }
+  }
+`

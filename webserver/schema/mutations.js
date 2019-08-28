@@ -2,6 +2,7 @@ const graphql = require('graphql');
 const jwt = require('jsonwebtoken');
 const { GraphQLObjectType, GraphQLString, GraphQLBoolean, GraphQLFloat } = graphql;
 const { TransactionModel } = require('../data-models/Transaction');
+const { CategoryModel } = require('../data-models/Category');
 const TransactionType = require('./model-types/user-type');
 const { BudgetModel } = require('../data-models/Budget');
 
@@ -41,6 +42,30 @@ const mutation = new GraphQLObjectType({
           throw new Error('Budget already exists for that month.');
         } else {
           const newBudget = await new BudgetModel({ month, creator }).save();
+          await new CategoryModel({
+            user_id: creator,
+            budget_id: newBudget._id,
+            name: 'Income',
+            starting_balance: 0.0,
+            current_balance: 0.0,
+            description: 'All sources of income for the month.'
+          }).save();
+          await new CategoryModel({
+            user_id: creator,
+            budget_id: newBudget._id,
+            name: 'Savings',
+            starting_balance: 0.0,
+            current_balance: 0.0,
+            description: 'Savings account balance.'
+          }).save();
+          await new CategoryModel({
+            user_id: creator,
+            budget_id: newBudget._id,
+            name: 'Emergency Funds',
+            starting_balance: 0.0,
+            current_balance: 0.0,
+            description: 'All savings used for emergencies.'
+          }).save();
           return {
             _id: newBudget._id,
             month: newBudget.month,
