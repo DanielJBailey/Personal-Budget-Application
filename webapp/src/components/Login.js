@@ -114,7 +114,6 @@ export const Container = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 1em;
 
   a {
     text-decoration: none;

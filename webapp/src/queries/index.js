@@ -48,3 +48,11 @@ export const ADD_BUDGET = gql`
     }
   }
 `
+
+export const DELETE_BUDGET = gql`
+  mutation($creator: String, $_id: String) {
+    deleteBudget(creator: $creator, _id: $_id) {
+      status
+    }
+  }
+`

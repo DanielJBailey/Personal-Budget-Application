@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { useLazyQuery } from '@apollo/react-hooks'
 // import propTypes from 'prop-types'
-import { GET_BUDGETS } from '../queries/index'
+import { GET_BUDGETS, DELETE_BUDGET } from '../queries/index'
+import { Mutation } from 'react-apollo'
 import styled from '@emotion/styled'
 import { useAuth } from '../context/auth'
 import NewBudgetForm from './NewBudgetForm'
@@ -67,7 +68,7 @@ const Home = () => {
     setCurrentBudget(current)
   }
 
-  const handleDeleteConfirmm = () => {
+  const handleDeleteConfirm = deleteBudget => {
     alert
       .fire({
         title: 'Are you sure?',
@@ -80,6 +81,9 @@ const Home = () => {
       })
       .then(result => {
         if (result.value) {
+          deleteBudget()
+          let filteredBudgets = budgets.filter(b => b._id !== currentBudget._id)
+          setBudgets(filteredBudgets)
           alert.fire('Deleted!', 'Your budget has been deleted.', 'success')
         }
       })
@@ -113,10 +117,18 @@ const Home = () => {
                       <i className='fas fa-plus icon' />
                       Create New Budget
                     </NewBudget>
-                    <Trash onClick={handleDeleteConfirmm}>
-                      <i className='far fa-trash-alt icon' />
-                      Trash Budget
-                    </Trash>
+                    {currentBudget && (
+                      <Mutation mutation={DELETE_BUDGET} variables={{ creator: user._id, _id: currentBudget._id }}>
+                        {(deleteBudget, { loading }) => {
+                          return (
+                            <Trash onClick={() => handleDeleteConfirm(deleteBudget)}>
+                              <i className='far fa-trash-alt icon' />
+                              Trash Budget
+                            </Trash>
+                          )
+                        }}
+                      </Mutation>
+                    )}
                   </ButtonContainer>
                 </HeaderContainer>
               )}
