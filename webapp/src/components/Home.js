@@ -10,6 +10,7 @@ import NewBudgetForm from './NewBudgetForm'
 import { ScaleLoader } from 'react-spinners'
 import alert from 'sweetalert2'
 import Categories from './Categories'
+import NewCategoryForm from './NewCategoryForm'
 
 const Home = () => {
   const [getBudgets, { loading, data }] = useLazyQuery(GET_BUDGETS)
@@ -144,7 +145,9 @@ const Home = () => {
                   </HeaderContainer>
                   <BodyContainer>
                     <BudgetContainer>{currentBudget && <Categories budget={currentBudget} />}</BudgetContainer>
-                    <StatsContainer>My Spending</StatsContainer>
+                    <StatsContainer>
+                      <NewCategoryForm currentBudget={currentBudget} />
+                    </StatsContainer>
                   </BodyContainer>
                 </>
               )}
@@ -177,10 +180,6 @@ const BudgetContainer = styled.div`
 const StatsContainer = styled.div`
   flex: 1;
   width: 100%;
-  min-height: 600px;
-  border: 1px solid #dcdcdc;
-  border-radius: 5px;
-  padding: 1em;
 `
 
 const NoBudgetContainer = styled.div`

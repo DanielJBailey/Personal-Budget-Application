@@ -56,6 +56,24 @@ export const DELETE_BUDGET = gql`
     }
   }
 `
+
+export const ADD_CATEGORY = gql`
+  mutation($user_id: String!, $budget_id: String!, $name: String!, $description: String, $starting_balance: Float!) {
+    addCategory(
+      user_id: $user_id
+      budget_id: $budget_id
+      name: $name
+      description: $description
+      starting_balance: $starting_balance
+    ) {
+      _id
+      starting_balance
+      name
+      description
+    }
+  }
+`
+
 export const GET_CATEGORY = gql`
   query($budget_id: String, $user_id: String, $name: String) {
     getCategory(budget_id: $budget_id, user_id: $user_id, name: $name) {
@@ -74,6 +92,7 @@ export const GET_CATEGORIES = gql`
       starting_balance
       description
       _id
+      user_created
     }
   }
 `

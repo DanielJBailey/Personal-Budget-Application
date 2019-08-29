@@ -1,5 +1,5 @@
 const graphql = require('graphql');
-const { GraphQLObjectType, GraphQLString, GraphQLFloat } = graphql;
+const { GraphQLObjectType, GraphQLString, GraphQLFloat, GraphQLBoolean } = graphql;
 
 const CategoryType = new GraphQLObjectType({
   name: 'Category',
@@ -10,7 +10,8 @@ const CategoryType = new GraphQLObjectType({
     name: { type: GraphQLString },
     starting_balance: { type: GraphQLFloat },
     current_balance: { type: GraphQLFloat },
-    description: { type: GraphQLString }
+    description: { type: GraphQLString },
+    user_created: { type: GraphQLBoolean }
   })
 });
 

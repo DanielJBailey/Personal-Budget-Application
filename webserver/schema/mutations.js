@@ -3,9 +3,9 @@ const jwt = require('jsonwebtoken');
 const { GraphQLObjectType, GraphQLString, GraphQLBoolean, GraphQLFloat } = graphql;
 const { TransactionModel } = require('../data-models/Transaction');
 const { CategoryModel } = require('../data-models/Category');
+const CategoryType = require('./model-types/category-type');
 const TransactionType = require('./model-types/user-type');
 const { BudgetModel } = require('../data-models/Budget');
-
 const BudgetType = require('./model-types/budget-type');
 const UserType = require('./model-types/user-type');
 const { UserModel } = require('../data-models/User');
@@ -19,6 +19,33 @@ const createToken = (user, secret, expiresIn) => {
 const mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
+    addCategory: {
+      type: CategoryType,
+      args: {
+        user_id: { type: GraphQLString },
+        budget_id: { type: GraphQLString },
+        name: { type: GraphQLString },
+        starting_balance: { type: GraphQLFloat },
+        current_balance: { type: GraphQLFloat },
+        description: { type: GraphQLString }
+      },
+      resolve: async (parentValue, { user_id, budget_id, name, starting_balance, current_balance, description }) => {
+        const category = await CategoryModel.findOne({ user_id, budget_id, name });
+        if (category) {
+          throw new Error('Category already exists for this budget!');
+        } else {
+          return new CategoryModel({
+            user_id,
+            description,
+            budget_id,
+            starting_balance,
+            current_balance,
+            name,
+            user_created: true
+          }).save();
+        }
+      }
+    },
     deleteBudget: {
       type: BudgetType,
       args: {
@@ -48,7 +75,8 @@ const mutation = new GraphQLObjectType({
             name: 'Income',
             starting_balance: 0.0,
             current_balance: 0.0,
-            description: 'All sources of income for the month.'
+            description: 'All sources of income for the month.',
+            user_created: false
           }).save();
           await new CategoryModel({
             user_id: creator,
@@ -56,7 +84,8 @@ const mutation = new GraphQLObjectType({
             name: 'Savings',
             starting_balance: 0.0,
             current_balance: 0.0,
-            description: 'Savings account balance.'
+            description: 'Savings account balance.',
+            user_created: false
           }).save();
           await new CategoryModel({
             user_id: creator,
@@ -64,7 +93,8 @@ const mutation = new GraphQLObjectType({
             name: 'Emergency Funds',
             starting_balance: 0.0,
             current_balance: 0.0,
-            description: 'All savings used for emergencies.'
+            description: 'All savings used for emergencies.',
+            user_created: false
           }).save();
           return {
             _id: newBudget._id,

@@ -7,7 +7,8 @@ const CategorySchema = new Schema({
   name: { type: String, required: true },
   starting_balance: { type: Number },
   current_balance: { type: Number },
-  description: { type: String }
+  description: { type: String },
+  user_created: { type: Boolean }
 });
 
 const CategoryModel = model('Category', CategorySchema, 'categories');
