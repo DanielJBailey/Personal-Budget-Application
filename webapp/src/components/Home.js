@@ -11,6 +11,7 @@ import { ScaleLoader } from 'react-spinners'
 import alert from 'sweetalert2'
 import Categories from './Categories'
 import NewCategoryForm from './NewCategoryForm'
+import LeftOver from './Leftover'
 
 const Home = () => {
   const [getBudgets, { loading, data }] = useLazyQuery(GET_BUDGETS)
@@ -20,6 +21,7 @@ const Home = () => {
   const { user } = useAuth()
   const [addingBudget, setAddingBudget] = useState(false)
   const [userCategories, setUserCategories] = useState([])
+  const [incomeCategory, setIncomeCategory] = useState({})
 
   useEffect(() => {
     if (user._id) {
@@ -101,69 +103,67 @@ const Home = () => {
         </NoBudgetContainer>
       ) : (
         <>
-          {addingBudget ? (
-            <NewBudgetForm budgets={budgets} closeForm={setAddingBudget} setBudgets={setBudgets} />
-          ) : (
+          {addingBudget && <NewBudgetForm budgets={budgets} closeForm={setAddingBudget} setBudgets={setBudgets} />}
+          {budgets.length === 0 && (
+            <NoBudgetContainer>
+              <NoBudgets>You currently have no budgets to show.</NoBudgets>
+              <NewBudget onClick={() => setAddingBudget(true)}>
+                <i className='fas fa-plus icon' />
+                Create New Budget
+              </NewBudget>
+            </NoBudgetContainer>
+          )}
+          {budgets.length > 0 && (
             <>
-              {budgets.length === 0 && (
-                <NoBudgetContainer>
-                  <NoBudgets>You currently have no budgets to show.</NoBudgets>
+              <HeaderContainer>
+                {currentBudget && renderMonth(currentBudget.month)}
+                <ButtonContainer>
+                  <SelectMonth onChange={handleMonthChange}>
+                    {options.map((o, i) => (
+                      <option key={i} value={o.value}>
+                        {o.label}
+                      </option>
+                    ))}
+                  </SelectMonth>
                   <NewBudget onClick={() => setAddingBudget(true)}>
                     <i className='fas fa-plus icon' />
                     Create New Budget
                   </NewBudget>
-                </NoBudgetContainer>
-              )}
-              {budgets.length > 0 && (
-                <>
-                  <HeaderContainer>
-                    {currentBudget && renderMonth(currentBudget.month)}
-                    <ButtonContainer>
-                      <SelectMonth onChange={handleMonthChange}>
-                        {options.map((o, i) => (
-                          <option key={i} value={o.value}>
-                            {o.label}
-                          </option>
-                        ))}
-                      </SelectMonth>
-                      <NewBudget onClick={() => setAddingBudget(true)}>
-                        <i className='fas fa-plus icon' />
-                        Create New Budget
-                      </NewBudget>
-                      {currentBudget && (
-                        <Mutation mutation={DELETE_BUDGET} variables={{ creator: user._id, _id: currentBudget._id }}>
-                          {deleteBudget => {
-                            return (
-                              <Trash onClick={() => handleDeleteConfirm(deleteBudget)}>
-                                <i className='far fa-trash-alt icon' />
-                                Trash Budget
-                              </Trash>
-                            )
-                          }}
-                        </Mutation>
-                      )}
-                    </ButtonContainer>
-                  </HeaderContainer>
-                  <BodyContainer>
-                    <BudgetContainer>
-                      {currentBudget && (
-                        <Categories
-                          budget={currentBudget}
-                          setUserCategories={setUserCategories}
-                          userCategories={userCategories}
-                        />
-                      )}
-                    </BudgetContainer>
-                    <StatsContainer>
-                      <NewCategoryForm
-                        currentBudget={currentBudget}
-                        setUserCategories={setUserCategories}
-                        userCategories={userCategories}
-                      />
-                    </StatsContainer>
-                  </BodyContainer>
-                </>
-              )}
+                  {currentBudget && (
+                    <Mutation mutation={DELETE_BUDGET} variables={{ creator: user._id, _id: currentBudget._id }}>
+                      {deleteBudget => {
+                        return (
+                          <Trash onClick={() => handleDeleteConfirm(deleteBudget)}>
+                            <i className='far fa-trash-alt icon' />
+                            Trash Budget
+                          </Trash>
+                        )
+                      }}
+                    </Mutation>
+                  )}
+                </ButtonContainer>
+              </HeaderContainer>
+              <BodyContainer>
+                <BudgetContainer>
+                  {currentBudget && (
+                    <Categories
+                      budget={currentBudget}
+                      incomeCategory={incomeCategory}
+                      setIncomeCategory={setIncomeCategory}
+                      setUserCategories={setUserCategories}
+                      userCategories={userCategories}
+                    />
+                  )}
+                </BudgetContainer>
+                <StatsContainer>
+                  <NewCategoryForm
+                    currentBudget={currentBudget}
+                    setUserCategories={setUserCategories}
+                    userCategories={userCategories}
+                  />
+                  <LeftOver incomeCategory={incomeCategory} userCategories={userCategories} />
+                </StatsContainer>
+              </BodyContainer>
             </>
           )}
         </>

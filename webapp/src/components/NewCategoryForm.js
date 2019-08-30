@@ -103,9 +103,8 @@ const Submit = styled.button`
 const Form = styled.form`
   width: 100%;
   background-color: white;
+  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
-  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.05);
-  border: 1px solid #dcdcdc;
   padding: 1em;
   input {
     width: 100%;
@@ -119,6 +118,7 @@ const Form = styled.form`
   h4 {
     margin-bottom: 16px;
     font-size: 18px;
+    text-align: center;
   }
 `
 

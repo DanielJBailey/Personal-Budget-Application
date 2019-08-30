@@ -36,7 +36,6 @@ export const FetchUser = ({ children }) => {
   }, [tokenFetched])
 
   useEffect(() => {
-    // handle token expiration
     if (data && data.getUser === null) {
       window.localStorage.removeItem('budget-auth')
       setFinished(true)

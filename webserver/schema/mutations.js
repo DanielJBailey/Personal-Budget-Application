@@ -133,7 +133,7 @@ const mutation = new GraphQLObjectType({
         } else {
           const newUser = await new UserModel({ username, password }).save();
           return {
-            token: createToken(newUser, process.env.SECRET, '1hr'),
+            token: createToken(newUser, process.env.SECRET, '12hr'),
             _id: newUser._id,
             username: newUser.username
           };
@@ -156,7 +156,7 @@ const mutation = new GraphQLObjectType({
           if (!isEqual) {
             throw new Error('Password is incorrect!');
           } else {
-            const token = createToken(user, process.env.SECRET, '1hr');
+            const token = createToken(user, process.env.SECRET, '12hr');
             return { token, _id: user._id, username: user.username };
           }
         }

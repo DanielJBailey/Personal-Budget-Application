@@ -5,10 +5,9 @@ import { GET_CATEGORIES } from '../queries/index'
 import styled from '@emotion/styled'
 import { useAuth } from '../context/auth'
 
-const Categories = ({ budget, userCategories, setUserCategories }) => {
+const Categories = ({ budget, userCategories, setUserCategories, incomeCategory, setIncomeCategory }) => {
   const [currentBudget, setCurrentBudget] = useState({})
   const [getCategories, { loading, data }] = useLazyQuery(GET_CATEGORIES)
-  const [incomeCategory, setIncomeCategory] = useState({})
   const [savingsCategory, setSavingsCategory] = useState({})
   const [emergencyCategory, setEmergencyCategory] = useState({})
   const [initialLoad, setInitialLoad] = useState(true)
@@ -151,8 +150,7 @@ const SkeletonCategory = styled.div`
 const Category = styled.div`
   width: 100%;
   background-color: white;
-  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.05);
-  border: 1px solid #dcdcdc;
+  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -178,7 +176,9 @@ const CategoryTitle = styled.h3`
 Categories.propTypes = {
   budget: propTypes.object,
   userCategories: propTypes.array,
-  setUserCategories: propTypes.func
+  setUserCategories: propTypes.func,
+  incomeCategory: propTypes.object,
+  setIncomeCategory: propTypes.func
 }
 
 export default Categories
