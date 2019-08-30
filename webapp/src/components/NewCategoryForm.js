@@ -4,7 +4,7 @@ import { useAuth } from '../context/auth'
 import { Mutation } from 'react-apollo'
 import { ADD_CATEGORY } from '../queries/index'
 import propTypes from 'prop-types'
-// import alert from 'sweetalert2'
+import alert from 'sweetalert2'
 
 const initialState = {
   name: '',
@@ -12,7 +12,7 @@ const initialState = {
   starting_balance: ''
 }
 
-const NewCategoryForm = ({ currentBudget }) => {
+const NewCategoryForm = ({ currentBudget, userCategories, setUserCategories }) => {
   const [formValues, setFormValues] = useState({ ...initialState })
   const { user } = useAuth()
 
@@ -24,7 +24,13 @@ const NewCategoryForm = ({ currentBudget }) => {
     e.preventDefault()
     addCategory().then(async ({ data }) => {
       if (data && data.addCategory) {
-        console.log(data)
+        setUserCategories([...userCategories, data.addCategory])
+        alert.fire(
+          'Category Added!',
+          `You have successfully added the category for ${data.addCategory.name}.`,
+          'success'
+        )
+        setFormValues({ ...initialState })
       }
     })
   }
@@ -36,12 +42,14 @@ const NewCategoryForm = ({ currentBudget }) => {
           mutation={ADD_CATEGORY}
           variables={{
             ...formValues,
-            starting_balance: parseInt(formValues.starting_balance),
+            starting_balance: parseFloat(formValues.starting_balance),
             user_id: user._id,
             budget_id: currentBudget._id
           }}
         >
-          {addCategory => {
+          {(addCategory, { error }) => {
+            // if (error) {
+            // }
             return (
               <Form onSubmit={e => handleSubmit(e, addCategory)}>
                 <h4>Add Category</h4>
@@ -117,5 +125,7 @@ const Form = styled.form`
 export default NewCategoryForm
 
 NewCategoryForm.propTypes = {
-  currentBudget: propTypes.object
+  currentBudget: propTypes.object,
+  userCategories: propTypes.array,
+  setUserCategories: propTypes.func
 }

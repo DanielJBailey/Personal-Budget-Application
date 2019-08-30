@@ -19,6 +19,7 @@ const Home = () => {
   const [options, setOptions] = useState([])
   const { user } = useAuth()
   const [addingBudget, setAddingBudget] = useState(false)
+  const [userCategories, setUserCategories] = useState([])
 
   useEffect(() => {
     if (user._id) {
@@ -144,9 +145,21 @@ const Home = () => {
                     </ButtonContainer>
                   </HeaderContainer>
                   <BodyContainer>
-                    <BudgetContainer>{currentBudget && <Categories budget={currentBudget} />}</BudgetContainer>
+                    <BudgetContainer>
+                      {currentBudget && (
+                        <Categories
+                          budget={currentBudget}
+                          setUserCategories={setUserCategories}
+                          userCategories={userCategories}
+                        />
+                      )}
+                    </BudgetContainer>
                     <StatsContainer>
-                      <NewCategoryForm currentBudget={currentBudget} />
+                      <NewCategoryForm
+                        currentBudget={currentBudget}
+                        setUserCategories={setUserCategories}
+                        userCategories={userCategories}
+                      />
                     </StatsContainer>
                   </BodyContainer>
                 </>

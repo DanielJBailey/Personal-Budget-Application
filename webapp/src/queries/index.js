@@ -70,6 +70,7 @@ export const ADD_CATEGORY = gql`
       starting_balance
       name
       description
+      user_created
     }
   }
 `
