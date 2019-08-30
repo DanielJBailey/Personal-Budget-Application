@@ -6,6 +6,7 @@ const Home = lazy(() => import('./components/Home'))
 const Register = lazy(() => import('./components/Register'))
 const Login = lazy(() => import('./components/Login'))
 const Nav = lazy(() => import('./components/NavBar'))
+const Category = lazy(() => import('./components/Category'))
 
 function AppRouter () {
   return (
@@ -14,6 +15,7 @@ function AppRouter () {
       <FetchUser>
         <Switch>
           <ProtectedRoute component={Home} exact path='/' />
+          <ProtectedRoute component={Category} exact path='/category/:category_name' />
           <Route component={Register} exact path='/register' />
           <Route component={Login} exact path='/login' />
         </Switch>

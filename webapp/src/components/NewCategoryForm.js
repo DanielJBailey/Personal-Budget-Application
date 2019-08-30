@@ -43,6 +43,7 @@ const NewCategoryForm = ({ currentBudget, userCategories, setUserCategories }) =
           variables={{
             ...formValues,
             starting_balance: parseFloat(formValues.starting_balance),
+            current_balance: parseFloat(formValues.starting_balance),
             user_id: user._id,
             budget_id: currentBudget._id
           }}

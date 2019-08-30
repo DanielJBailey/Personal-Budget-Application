@@ -3,9 +3,18 @@ import { useLazyQuery } from '@apollo/react-hooks'
 import propTypes from 'prop-types'
 import { GET_CATEGORIES } from '../queries/index'
 import styled from '@emotion/styled'
+import { keyframes } from '@emotion/core'
 import { useAuth } from '../context/auth'
+import { withRouter } from 'react-router-dom'
 
-const Categories = ({ budget, userCategories, setUserCategories, incomeCategory, setIncomeCategory }) => {
+const Categories = ({
+  budget,
+  userCategories,
+  setUserCategories,
+  incomeCategory,
+  setIncomeCategory,
+  history: { push }
+}) => {
   const [currentBudget, setCurrentBudget] = useState({})
   const [getCategories, { loading, data }] = useLazyQuery(GET_CATEGORIES)
   const [savingsCategory, setSavingsCategory] = useState({})
@@ -52,8 +61,12 @@ const Categories = ({ budget, userCategories, setUserCategories, incomeCategory,
     return formatter.format(number)
   }
 
+  const handleCategoryClick = category => {
+    push(`/category/${category.name}`)
+  }
+
   const renderCategory = (category, key) => (
-    <Category key={key}>
+    <Category key={key} onClick={() => handleCategoryClick(category)}>
       <TitleSection>
         <CategoryTitle>{category.name}</CategoryTitle>
         <CategoryDescription>{category.description && category.description}</CategoryDescription>
@@ -86,6 +99,15 @@ const Categories = ({ budget, userCategories, setUserCategories, incomeCategory,
   )
 }
 
+const SlideIn = keyframes`
+  from {
+    marginTop: 30px;
+  }
+  to {
+    marginTop: 0;
+  }
+`
+
 const BalanceSection = styled.div`
   display: flex;
   flex-direction: column;
@@ -115,6 +137,7 @@ const CategoryDescription = styled.p`
   margin-bottom: 0;
   font-size: 12px;
   color: #666;
+  max-width: 450px;
 `
 
 const TitleSection = styled.div`
@@ -160,9 +183,13 @@ const Category = styled.div`
   position: relative;
   cursor: pointer;
   transition: 0.2s linear;
+  animation: ${SlideIn} 0.5s linear;
+  cursor: pointer;
+
   &:not(:first-of-type) {
     margin-top: 24px;
   }
+
   &:hover {
     box-shadow: 4px 8px 16px rgba(0, 0, 0, 0.15);
   }
@@ -178,7 +205,8 @@ Categories.propTypes = {
   userCategories: propTypes.array,
   setUserCategories: propTypes.func,
   incomeCategory: propTypes.object,
-  setIncomeCategory: propTypes.func
+  setIncomeCategory: propTypes.func,
+  history: propTypes.object
 }
 
-export default Categories
+export default withRouter(Categories)

@@ -73,7 +73,6 @@ const mutation = new GraphQLObjectType({
             user_id: creator,
             budget_id: newBudget._id,
             name: 'Income',
-            starting_balance: 0.0,
             current_balance: 0.0,
             description: 'All sources of income for the month.',
             user_created: false
@@ -82,7 +81,6 @@ const mutation = new GraphQLObjectType({
             user_id: creator,
             budget_id: newBudget._id,
             name: 'Savings',
-            starting_balance: 0.0,
             current_balance: 0.0,
             description: 'Savings account balance.',
             user_created: false
@@ -91,7 +89,6 @@ const mutation = new GraphQLObjectType({
             user_id: creator,
             budget_id: newBudget._id,
             name: 'Emergency Funds',
-            starting_balance: 0.0,
             current_balance: 0.0,
             description: 'All savings used for emergencies.',
             user_created: false

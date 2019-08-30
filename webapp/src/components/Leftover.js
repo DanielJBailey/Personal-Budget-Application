@@ -61,7 +61,7 @@ const LeftOver = ({ incomeCategory, userCategories }) => {
 
   return (
     <Card>
-      <h4>Amount Leftover</h4>
+      <h4>Amount Leftover To Budget</h4>
       {renderBarChart()}
     </Card>
   )
@@ -97,20 +97,22 @@ const BarChart = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  border-radius: 5px;
 `
 const Bar = styled.div`
   position: absolute;
   top: 0;
   left: 0;
   height: 35px;
+  border-radius: 5px;
   width: ${props => {
     return props.width + '%'
   }};
   transition: 0.75s linear;
   background-color: ${props => {
-    if (props.width < 30) {
+    if (props.width < 10) {
       return '#ee5253'
-    } else if (props.width < 60) {
+    } else if (props.width < 30) {
       return 'yellow'
     } else return '#1dd1a1'
   }};

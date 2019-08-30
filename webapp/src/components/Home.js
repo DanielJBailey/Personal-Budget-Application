@@ -161,7 +161,9 @@ const Home = () => {
                     setUserCategories={setUserCategories}
                     userCategories={userCategories}
                   />
-                  <LeftOver incomeCategory={incomeCategory} userCategories={userCategories} />
+                  {!incomeCategory.current_balance <= 0 && (
+                    <LeftOver incomeCategory={incomeCategory} userCategories={userCategories} />
+                  )}
                 </StatsContainer>
               </BodyContainer>
             </>
