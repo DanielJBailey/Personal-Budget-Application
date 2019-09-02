@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import styled from '@emotion/styled'
 import { useAuth } from '../context/auth'
+import { useBudget } from '../context/budget'
 import { Mutation } from 'react-apollo'
-import { ADD_CATEGORY } from '../queries/index'
-import propTypes from 'prop-types'
+import { ADD_CATEGORY, GET_CATEGORIES } from '../queries/index'
 import alert from 'sweetalert2'
+import propTypes from 'prop-types'
 
 const initialState = {
   name: '',
@@ -12,8 +13,9 @@ const initialState = {
   starting_balance: ''
 }
 
-const NewCategoryForm = ({ currentBudget, userCategories, setUserCategories }) => {
+const NewCategoryForm = ({ categories, setCategories }) => {
   const [formValues, setFormValues] = useState({ ...initialState })
+  const { currentBudget } = useBudget()
   const { user } = useAuth()
 
   const handleChange = ({ target: { name, value } }) => {
@@ -22,9 +24,9 @@ const NewCategoryForm = ({ currentBudget, userCategories, setUserCategories }) =
 
   const handleSubmit = (e, addCategory) => {
     e.preventDefault()
-    addCategory().then(async ({ data }) => {
-      if (data && data.addCategory) {
-        setUserCategories([...userCategories, data.addCategory])
+    addCategory().then(async ({ data, loading }) => {
+      if (!loading && data && data.addCategory) {
+        setCategories([...categories, data.addCategory])
         alert.fire(
           'Category Added!',
           `You have successfully added the category for ${data.addCategory.name}.`,
@@ -40,6 +42,14 @@ const NewCategoryForm = ({ currentBudget, userCategories, setUserCategories }) =
       {user && currentBudget && (
         <Mutation
           mutation={ADD_CATEGORY}
+          refetchQueries={() => {
+            return [
+              {
+                query: GET_CATEGORIES,
+                variables: { user_id: user._id, budget_id: currentBudget._id }
+              }
+            ]
+          }}
           variables={{
             ...formValues,
             starting_balance: parseFloat(formValues.starting_balance),
@@ -48,9 +58,7 @@ const NewCategoryForm = ({ currentBudget, userCategories, setUserCategories }) =
             budget_id: currentBudget._id
           }}
         >
-          {(addCategory, { error }) => {
-            // if (error) {
-            // }
+          {(addCategory, { loading, error, data }) => {
             return (
               <Form onSubmit={e => handleSubmit(e, addCategory)}>
                 <h4>Add Category</h4>
@@ -126,7 +134,6 @@ const Form = styled.form`
 export default NewCategoryForm
 
 NewCategoryForm.propTypes = {
-  currentBudget: propTypes.object,
-  userCategories: propTypes.array,
-  setUserCategories: propTypes.func
+  categories: propTypes.array,
+  setCategories: propTypes.func
 }

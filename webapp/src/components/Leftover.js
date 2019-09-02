@@ -1,24 +1,27 @@
 import React, { useState, useEffect } from 'react'
 import styled from '@emotion/styled'
 import propTypes from 'prop-types'
+import BarChart from './BarChart'
 
-const LeftOver = ({ incomeCategory, userCategories }) => {
+const LeftOver = ({ categories }) => {
   const [remaining, setRemaining] = useState(0)
   const [negative, setNegative] = useState(false)
   const [startingAmount, setStartingAmount] = useState(0)
 
   useEffect(() => {
-    if (incomeCategory && userCategories) {
-      let income = incomeCategory.current_balance || 0
-      setStartingAmount(income)
-      let expense = 0
-      userCategories.forEach(c => {
-        expense += c.starting_balance
+    if (categories.length > 0) {
+      let income = categories.find(c => c.name === 'Income')
+      setStartingAmount(income.current_balance)
+      let expenses = 0
+      categories.forEach(c => {
+        if (c.name !== 'Income') {
+          expenses += c.starting_balance
+        }
       })
-      let remainingBalance = income - expense
+      let remainingBalance = income.current_balance - expenses
       setRemaining(remainingBalance)
     }
-  }, [incomeCategory, userCategories])
+  }, [categories])
 
   useEffect(() => {
     if (remaining < 0) {
@@ -26,102 +29,15 @@ const LeftOver = ({ incomeCategory, userCategories }) => {
     } else setNegative(false)
   }, [remaining])
 
-  const renderBarChart = () => {
-    const [width, setWidth] = useState(0)
-
-    useEffect(() => {
-      let percent = (remaining / startingAmount) * 100
-      if (!isNaN(percent)) {
-        setWidth(percent)
-      }
-    }, [remaining])
-
-    return (
-      <BarChartContainer>
-        <BarChart remaining={remaining}>
-          <Amount negative={negative}>{renderCurrency(remaining)}</Amount>
-          <Bar width={width} />
-        </BarChart>
-        <Legend>
-          <Amount legend>{renderCurrency(0)}</Amount>
-          <Amount legend>{renderCurrency(startingAmount)}</Amount>
-        </Legend>
-      </BarChartContainer>
-    )
-  }
-
-  const renderCurrency = number => {
-    const formatter = new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2
-    })
-    return formatter.format(number)
-  }
-
   return (
-    <Card>
-      <h4>Amount Leftover To Budget</h4>
-      {renderBarChart()}
-    </Card>
+    <>
+      <Card>
+        <h4>Amount Leftover To Budget</h4>
+        <BarChart negative={negative} remaining={remaining} startingAmount={startingAmount} />
+      </Card>
+    </>
   )
 }
-
-const Legend = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-`
-
-const Amount = styled.div`
-  font-size: 14px;
-  z-index: 2;
-  text-align: center;
-  color: ${props => {
-    if (props.legend) return 'rgba(0,0,0,0.4)'
-    else return 'inherit'
-  }};
-`
-
-const BarChart = styled.div`
-  height: 35px;
-  width: 100%;
-  background-color: ${props => {
-    if (props.remaining < 0) return '#ee5253'
-    else return 'rgba(0, 0, 0, 0.05)'
-  }};
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  border-radius: 5px;
-`
-const Bar = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 35px;
-  border-radius: 5px;
-  width: ${props => {
-    return props.width + '%'
-  }};
-  transition: 0.75s linear;
-  background-color: ${props => {
-    if (props.width < 10) {
-      return '#ee5253'
-    } else if (props.width < 30) {
-      return 'yellow'
-    } else return '#1dd1a1'
-  }};
-`
-
-const BarChartContainer = styled.div`
-  width: 100%;
-  margin-top: 8px;
-`
 
 const Card = styled.div`
   width: 100%;
@@ -137,9 +53,8 @@ const Card = styled.div`
   margin-top: 24px;
 `
 
-export default LeftOver
-
 LeftOver.propTypes = {
-  userCategories: propTypes.array,
-  incomeCategory: propTypes.object
+  categories: propTypes.array
 }
+
+export default LeftOver

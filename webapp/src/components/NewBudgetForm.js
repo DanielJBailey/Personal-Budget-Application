@@ -4,6 +4,7 @@ import { Mutation } from 'react-apollo'
 import { useAuth } from '../context/auth'
 import { ADD_BUDGET } from '../queries/index'
 import propTypes from 'prop-types'
+import alert from 'sweetalert2'
 
 const NewBudgetForm = ({ setBudgets, closeForm, budgets }) => {
   const [formValues, setFormValues] = useState({})
@@ -60,6 +61,7 @@ const NewBudgetForm = ({ setBudgets, closeForm, budgets }) => {
           let { _id, month } = data.addBudget
           let newBudget = { _id, month }
           setBudgets([newBudget, ...budgets])
+          alert.fire('Budget Created!', `You have successfull created a budget for ${newBudget.month}`, 'success')
           closeForm(false)
         }
       })

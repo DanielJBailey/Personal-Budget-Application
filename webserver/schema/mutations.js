@@ -46,6 +46,16 @@ const mutation = new GraphQLObjectType({
         }
       }
     },
+    deleteCategory: {
+      type: CategoryType,
+      args: {
+        budget_id: { type: GraphQLString },
+        _id: { type: GraphQLString }
+      },
+      resolve: async (parentValue, { budget_id, _id }) => {
+        return await CategoryModel.findOneAndDelete({ budget_id, _id });
+      }
+    },
     deleteBudget: {
       type: BudgetType,
       args: {

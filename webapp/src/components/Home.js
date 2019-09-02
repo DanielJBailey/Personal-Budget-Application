@@ -6,22 +6,23 @@ import { GET_BUDGETS, DELETE_BUDGET } from '../queries/index'
 import { Mutation } from 'react-apollo'
 import styled from '@emotion/styled'
 import { useAuth } from '../context/auth'
-import NewBudgetForm from './NewBudgetForm'
+import { useBudget } from '../context/budget'
 import { ScaleLoader } from 'react-spinners'
 import alert from 'sweetalert2'
-import Categories from './Categories'
+import NewBudgetForm from './NewBudgetForm'
+import CategoryList from './CategoryList'
 import NewCategoryForm from './NewCategoryForm'
 import LeftOver from './Leftover'
+import SpendingPerCategory from './SpendingPerCategory'
 
 const Home = () => {
   const [getBudgets, { loading, data }] = useLazyQuery(GET_BUDGETS)
   const [budgets, setBudgets] = useState([])
-  const [currentBudget, setCurrentBudget] = useState({})
+  const [categories, setCategories] = useState([])
   const [options, setOptions] = useState([])
-  const { user } = useAuth()
   const [addingBudget, setAddingBudget] = useState(false)
-  const [userCategories, setUserCategories] = useState([])
-  const [incomeCategory, setIncomeCategory] = useState({})
+  const { user } = useAuth()
+  const { currentBudget, setCurrentBudget } = useBudget()
 
   useEffect(() => {
     if (user._id) {
@@ -41,7 +42,18 @@ const Home = () => {
   }, [data])
 
   useEffect(() => {
-    if (budgets) setCurrentBudget(budgets[0])
+    async function setBudgetStorage (budget) {
+      let storedBudget = await JSON.parse(window.localStorage.getItem('current-budget'))
+      if (storedBudget) {
+        setCurrentBudget(storedBudget)
+      } else {
+        await window.localStorage.setItem('current-budget', JSON.stringify(budget))
+        setCurrentBudget(budget)
+      }
+    }
+    if (budgets.length > 0) {
+      setBudgetStorage(budgets[0])
+    }
   }, [budgets])
 
   useEffect(() => {
@@ -51,6 +63,7 @@ const Home = () => {
         let option = { value: budget._id, label: budget.month }
         options.push(option)
       })
+      options.sort((a, b) => new Date(b.label) - new Date(a.label))
       setOptions(options)
     }
   }, [budgets])
@@ -68,9 +81,10 @@ const Home = () => {
     }
   }
 
-  const handleMonthChange = e => {
-    let current = budgets.find(b => b._id === e.target.value)
+  const handleMonthChange = async e => {
+    let current = await budgets.find(b => b._id === e.target.value)
     setCurrentBudget(current)
+    await window.localStorage.setItem('current-budget', JSON.stringify(current))
   }
 
   const handleDeleteConfirm = deleteBudget => {
@@ -84,9 +98,10 @@ const Home = () => {
         cancelButtonColor: '#ee5253',
         confirmButtonText: 'Confirm'
       })
-      .then(result => {
+      .then(async result => {
         if (result.value) {
           deleteBudget()
+          await window.localStorage.removeItem('current-budget')
           let filteredBudgets = budgets.filter(b => b._id !== currentBudget._id)
           setBudgets(filteredBudgets)
           alert.fire('Deleted!', 'Your budget has been deleted.', 'success')
@@ -118,7 +133,7 @@ const Home = () => {
               <HeaderContainer>
                 {currentBudget && renderMonth(currentBudget.month)}
                 <ButtonContainer>
-                  <SelectMonth onChange={handleMonthChange}>
+                  <SelectMonth onChange={handleMonthChange} value={currentBudget._id}>
                     {options.map((o, i) => (
                       <option key={i} value={o.value}>
                         {o.label}
@@ -145,25 +160,12 @@ const Home = () => {
               </HeaderContainer>
               <BodyContainer>
                 <BudgetContainer>
-                  {currentBudget && (
-                    <Categories
-                      budget={currentBudget}
-                      incomeCategory={incomeCategory}
-                      setIncomeCategory={setIncomeCategory}
-                      setUserCategories={setUserCategories}
-                      userCategories={userCategories}
-                    />
-                  )}
+                  <CategoryList categories={categories} setCategories={setCategories} />
                 </BudgetContainer>
                 <StatsContainer>
-                  <NewCategoryForm
-                    currentBudget={currentBudget}
-                    setUserCategories={setUserCategories}
-                    userCategories={userCategories}
-                  />
-                  {!incomeCategory.current_balance <= 0 && (
-                    <LeftOver incomeCategory={incomeCategory} userCategories={userCategories} />
-                  )}
+                  <NewCategoryForm categories={categories} setCategories={setCategories} />
+                  <LeftOver categories={categories} />
+                  <SpendingPerCategory categories={categories} />
                 </StatsContainer>
               </BodyContainer>
             </>
@@ -174,7 +176,7 @@ const Home = () => {
   )
 }
 
-const BodyContainer = styled.div`
+export const BodyContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -186,13 +188,13 @@ const BodyContainer = styled.div`
   }
 `
 
-const BudgetContainer = styled.div`
+export const BudgetContainer = styled.div`
   flex: 2;
   width: 100%;
   margin-right: 24px;
 `
 
-const StatsContainer = styled.div`
+export const StatsContainer = styled.div`
   flex: 1;
   width: 100%;
 `

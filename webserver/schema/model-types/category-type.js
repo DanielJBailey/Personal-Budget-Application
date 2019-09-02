@@ -11,7 +11,8 @@ const CategoryType = new GraphQLObjectType({
     starting_balance: { type: GraphQLFloat },
     current_balance: { type: GraphQLFloat },
     description: { type: GraphQLString },
-    user_created: { type: GraphQLBoolean }
+    user_created: { type: GraphQLBoolean },
+    status: { type: GraphQLString }
   })
 });
 

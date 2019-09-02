@@ -6,19 +6,22 @@ import { ApolloProvider as HooksProvider } from '@apollo/react-hooks'
 import { client } from './network/apollo-client'
 import ErrorBoundary from './ErrorBoundary'
 import { UserProvider } from './context/auth'
+import { BudgetProvider } from './context/budget'
 import { ApolloProvider } from 'react-apollo'
 
 ReactDOM.render(
   <UserProvider>
-    <Router>
-      <ApolloProvider client={client}>
-        <HooksProvider client={client}>
-          <ErrorBoundary>
-            <AppRouter />
-          </ErrorBoundary>
-        </HooksProvider>
-      </ApolloProvider>
-    </Router>
+    <BudgetProvider>
+      <Router>
+        <ApolloProvider client={client}>
+          <HooksProvider client={client}>
+            <ErrorBoundary>
+              <AppRouter />
+            </ErrorBoundary>
+          </HooksProvider>
+        </ApolloProvider>
+      </Router>
+    </BudgetProvider>
   </UserProvider>,
   document.getElementById('react-app')
 )

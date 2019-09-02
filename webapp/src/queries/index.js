@@ -74,23 +74,26 @@ export const ADD_CATEGORY = gql`
       starting_balance: $starting_balance
       current_balance: $current_balance
     ) {
-      _id
-      starting_balance
       name
-      description
-      user_created
       current_balance
+      starting_balance
+      description
+      _id
+      user_created
     }
   }
 `
 
 export const GET_CATEGORY = gql`
-  query($budget_id: String, $user_id: String, $name: String) {
-    getCategory(budget_id: $budget_id, user_id: $user_id, name: $name) {
+  query($user_id: String, $name: String) {
+    getCategory(user_id: $user_id, name: $name) {
+      budget_id
       name
       current_balance
       starting_balance
       description
+      _id
+      user_created
     }
   }
 `
@@ -103,6 +106,14 @@ export const GET_CATEGORIES = gql`
       description
       _id
       user_created
+    }
+  }
+`
+
+export const DELETE_CATEGORY = gql`
+  mutation($budget_id: String, $_id: String) {
+    deleteCategory(budget_id: $budget_id, _id: $_id) {
+      status
     }
   }
 `

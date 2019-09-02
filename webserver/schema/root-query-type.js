@@ -33,15 +33,14 @@ const RootQuery = new GraphQLObjectType({
         }
       }
     },
-    getBudgetsForUser: {
-      type: new GraphQLList(BudgetType),
+    getCategory: {
+      type: CategoryType,
       args: {
-        _id: { type: GraphQLString }
+        name: { type: GraphQLString },
+        user_id: { type: GraphQLString }
       },
-      resolve: async (parent, { _id }) => {
-        console.log('user id is' + _id);
-        const budgets = await BudgetModel.find({ creator: _id });
-        return budgets;
+      resolve: async (parentValue, { name, user_id }) => {
+        return await CategoryModel.findOne({ name, user_id });
       }
     },
     getCategories: {
@@ -56,6 +55,16 @@ const RootQuery = new GraphQLObjectType({
           user_id
         });
         return categories;
+      }
+    },
+    getBudgetsForUser: {
+      type: new GraphQLList(BudgetType),
+      args: {
+        _id: { type: GraphQLString }
+      },
+      resolve: async (parent, { _id }) => {
+        const budgets = await BudgetModel.find({ creator: _id });
+        return budgets;
       }
     },
     transaction: {

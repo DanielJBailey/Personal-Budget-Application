@@ -15,7 +15,7 @@ function AppRouter () {
       <FetchUser>
         <Switch>
           <ProtectedRoute component={Home} exact path='/' />
-          <ProtectedRoute component={Category} exact path='/category/:category_name' />
+          <ProtectedRoute component={Category} exact path='/category/:categoryName' />
           <Route component={Register} exact path='/register' />
           <Route component={Login} exact path='/login' />
         </Switch>
