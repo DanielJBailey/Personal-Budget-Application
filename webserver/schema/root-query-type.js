@@ -1,19 +1,28 @@
 const graphql = require('graphql');
-const TransactionType = require('./model-types/transaction-type');
 const BudgetType = require('./model-types/budget-type');
 const CategoryType = require('./model-types/category-type');
-const Transactions = require('../query-resolvers/transaction-resolvers.js');
+const TransactionType = require('./model-types/transaction-type');
 const UserType = require('./model-types/user-type');
 const { UserModel } = require('../data-models/User');
 const { BudgetModel } = require('../data-models/Budget');
 const { CategoryModel } = require('../data-models/Category');
+const { TransactionModel } = require('../data-models/Transaction');
 
 const jwt = require('jsonwebtoken');
 
-const { GraphQLBoolean, GraphQLFloat, GraphQLList, GraphQLObjectType, GraphQLString, GraphQLInputObjectType } = graphql;
+const { GraphQLList, GraphQLObjectType, GraphQLString } = graphql;
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   fields: () => ({
+    getTransactions: {
+      type: new GraphQLList(TransactionType),
+      args: {
+        category_id: { type: GraphQLString }
+      },
+      resolve: async (parentValue, { category_id }) => {
+        return await TransactionModel.find({ category_id });
+      }
+    },
     getUser: {
       type: UserType,
       args: {
@@ -65,29 +74,6 @@ const RootQuery = new GraphQLObjectType({
       resolve: async (parent, { _id }) => {
         const budgets = await BudgetModel.find({ creator: _id });
         return budgets;
-      }
-    },
-    transaction: {
-      type: TransactionType,
-      args: {
-        id: { type: GraphQLString }
-      },
-      resolve(parentValue, args) {
-        return Transactions.findOne(args.id);
-      }
-    },
-    transactions: {
-      type: GraphQLList(TransactionType),
-      args: {
-        amount: { type: GraphQLFloat },
-        credit: { type: GraphQLBoolean },
-        debit: { type: GraphQLBoolean },
-        description: { type: GraphQLString },
-        merchant_id: { type: GraphQLString },
-        user_id: { type: GraphQLString }
-      },
-      resolve(parentValue, args) {
-        return Transactions.find(args);
       }
     }
   })

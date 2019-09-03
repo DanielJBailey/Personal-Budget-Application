@@ -70,10 +70,12 @@ const NewCategoryForm = ({ categories, setCategories }) => {
                   value={formValues.name}
                 />
                 <input
+                  min={0}
                   name='starting_balance'
                   onChange={handleChange}
                   placeholder='Starting Balance:'
                   required
+                  step={0.01}
                   type='number'
                   value={formValues.starting_balance}
                 />

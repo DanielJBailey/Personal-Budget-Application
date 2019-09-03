@@ -130,3 +130,44 @@ export const UPDATE_CATEGORY = gql`
     }
   }
 `
+
+export const ADD_TRANSACTION = gql`
+  mutation(
+    $category_id: String!
+    $amount: Float!
+    $debit: Boolean!
+    $credit: Boolean!
+    $date: String!
+    $description: String!
+  ) {
+    addTransaction(
+      category_id: $category_id
+      amount: $amount
+      debit: $debit
+      credit: $credit
+      date: $date
+      description: $description
+    ) {
+      amount
+      _id
+      category_id
+      description
+      category_balance
+      date
+    }
+  }
+`
+export const GET_TRANSACTIONS = gql`
+  query($category_id: String!) {
+    getTransactions(category_id: $category_id) {
+      _id
+      category_id
+      amount
+      debit
+      credit
+      description
+      date
+      category_balance
+    }
+  }
+`

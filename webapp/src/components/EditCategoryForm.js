@@ -95,10 +95,12 @@ const EditCategoryForm = ({ editing, category, setEditing }) => {
               <label htmlFor='starting_balance'>Starting Balance</label>
               <input
                 id='starting_balance'
+                min={0}
                 name='starting_balance'
                 onChange={handleChange}
                 placeholder='Starting Balance'
                 required
+                step={0.01}
                 type='number'
                 value={formValues.starting_balance}
               />

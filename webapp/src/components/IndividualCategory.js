@@ -22,9 +22,7 @@ const IndividualCategory = ({ category }) => {
         <p>
           {category.name === 'Income' ? 'Income per month' : category.user_created ? 'Amount Remaining' : 'Balance'}
         </p>
-        <CategoryBalance>
-          {category.user_created ? renderCurrency(category.current_balance) : renderCurrency(category.starting_balance)}
-        </CategoryBalance>
+        <CategoryBalance>{renderCurrency(category.current_balance)}</CategoryBalance>
       </BalanceSection>
       <ClickToView>Click to add, edit, and view transactions</ClickToView>
     </Category>

@@ -4,7 +4,7 @@ const { GraphQLObjectType, GraphQLString, GraphQLBoolean, GraphQLFloat } = graph
 const { TransactionModel } = require('../data-models/Transaction');
 const { CategoryModel } = require('../data-models/Category');
 const CategoryType = require('./model-types/category-type');
-const TransactionType = require('./model-types/user-type');
+const TransactionType = require('./model-types/transaction-type');
 const { BudgetModel } = require('../data-models/Budget');
 const BudgetType = require('./model-types/budget-type');
 const UserType = require('./model-types/user-type');
@@ -19,6 +19,48 @@ const createToken = (user, secret, expiresIn) => {
 const mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
+    addTransaction: {
+      type: TransactionType,
+      args: {
+        category_id: { type: GraphQLString },
+        amount: { type: GraphQLFloat },
+        credit: { type: GraphQLBoolean },
+        debit: { type: GraphQLBoolean },
+        description: { type: GraphQLString },
+        date: { type: GraphQLString }
+      },
+      resolve: async (parentValue, { category_id, amount, credit, debit, description, date }) => {
+        const category = await CategoryModel.findOne({ _id: category_id });
+        let category_balance;
+        if (credit) {
+          category_balance = category.current_balance + amount;
+          category.current_balance += amount;
+          category.save();
+          return new TransactionModel({
+            category_id,
+            amount,
+            credit,
+            debit,
+            description,
+            category_balance,
+            date
+          }).save();
+        } else {
+          category_balance = category.current_balance - amount;
+          category.current_balance -= amount;
+          category.save();
+          return new TransactionModel({
+            category_id,
+            amount,
+            credit,
+            debit,
+            description,
+            category_balance,
+            date
+          }).save();
+        }
+      }
+    },
     addCategory: {
       type: CategoryType,
       args: {
@@ -131,21 +173,6 @@ const mutation = new GraphQLObjectType({
             creator: newBudget.creator
           };
         }
-      }
-    },
-    addTransaction: {
-      type: TransactionType,
-      args: {
-        user_id: { type: GraphQLString },
-        description: { type: GraphQLString },
-        merchant_id: { type: GraphQLString },
-        debit: { type: GraphQLBoolean },
-        credit: { type: GraphQLBoolean },
-        amount: { type: GraphQLFloat }
-      },
-      /* eslint-disable-next-line camelcase */
-      resolve(parentValue, { user_id, description, merchant_id, debit, credit, amount }) {
-        return new TransactionModel({ user_id, description, merchant_id, debit, credit, amount }).save();
       }
     },
     addUser: {

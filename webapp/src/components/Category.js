@@ -6,11 +6,12 @@ import { BodyContainer, BudgetContainer as TransactionContainer, StatsContainer 
 import NewTransactionForm from './NewTransactionForm'
 import { useLazyQuery } from '@apollo/react-hooks'
 import { Mutation } from 'react-apollo'
-import { GET_CATEGORY, DELETE_CATEGORY, GET_CATEGORIES } from '../queries/index'
+import { GET_CATEGORY, DELETE_CATEGORY, GET_CATEGORIES, GET_TRANSACTIONS } from '../queries/index'
 import alert from 'sweetalert2'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/auth'
 import EditCategoryForm from './EditCategoryForm'
+import TransactionList from './TransactionList'
 
 const Category = ({
   match: {
@@ -20,8 +21,10 @@ const Category = ({
 }) => {
   const { user } = useAuth()
   const [getCategoryInformation, { data: categoryData }] = useLazyQuery(GET_CATEGORY)
+  const [getTransactions, { data: transactions }] = useLazyQuery(GET_TRANSACTIONS)
   const [category, setCategory] = useState(undefined)
-  // const [isUserCategory, setIsUserCategory] = useState(false)
+  const [currentTransactions, setCurrentTransactions] = useState([])
+  const [isUserCategory, setIsUserCategory] = useState(false)
   const [editing, setEditing] = useState(false)
   // const [transactions, setTransactions] = useState([])
 
@@ -37,10 +40,10 @@ const Category = ({
     }
   }, [categoryData])
 
-  // useEffect(() => {
-  //   if (category && category.user_created) setIsUserCategory(true)
-  //   else setIsUserCategory(false)
-  // }, [category])
+  useEffect(() => {
+    if (category && category.user_created) setIsUserCategory(true)
+    else setIsUserCategory(false)
+  }, [category])
 
   const renderCurrency = number => {
     const formatter = new Intl.NumberFormat('en-US', {
@@ -51,10 +54,17 @@ const Category = ({
     return formatter.format(number)
   }
 
-  // useEffect(() => {
-  //   if (category && category.description) {
-  //   }
-  // }, [category])
+  useEffect(() => {
+    if (category && category.description) {
+      getTransactions({ variables: { category_id: category._id } })
+    }
+  }, [category])
+
+  useEffect(() => {
+    if (transactions && transactions.getTransactions) {
+      setCurrentTransactions(transactions.getTransactions)
+    }
+  }, [transactions])
 
   const handleDeleteConfirm = async deleteCategory => {
     alert
@@ -91,19 +101,25 @@ const Category = ({
               Back to dashboard
             </Back>
           </Link>
-          <Overlay editing={editing} onClick={() => setEditing(false)} />
-          <EditCategoryForm category={category} editing={editing} setEditing={setEditing} />
+          {isUserCategory && (
+            <>
+              <Overlay editing={editing} onClick={() => setEditing(false)} />
+              <EditCategoryForm category={category} editing={editing} setEditing={setEditing} />
+            </>
+          )}
           <HeaderContainer>
             <TitleContainer>
               <CategoryTitle>{renderCategoryName(category.name)}</CategoryTitle>
               <CategoryDescription>{category.description}</CategoryDescription>
             </TitleContainer>
             <ButtonContainer>
-              <EditButton onClick={() => setEditing(!editing)}>
-                <i className='fas fa-edit icon' />
-                Edit Category
-              </EditButton>
-              {category.user_created && (
+              {isUserCategory && (
+                <EditButton onClick={() => setEditing(!editing)}>
+                  <i className='fas fa-edit icon' />
+                  Edit Category
+                </EditButton>
+              )}
+              {isUserCategory && (
                 <Mutation
                   mutation={DELETE_CATEGORY}
                   refetchQueries={() => {
@@ -129,16 +145,19 @@ const Category = ({
             </ButtonContainer>
           </HeaderContainer>
           <HR />
-          <BalanceContainer>
-            <StartingBalance>
-              Amount Budgeted For {renderCategoryName(category.name)}:{' '}
-              <span className='amount'>{renderCurrency(category.starting_balance)}</span>
-            </StartingBalance>
-          </BalanceContainer>
+          {isUserCategory && (
+            <BalanceContainer>
+              <StartingBalance current={category.current_balance}>
+                Current Balance: <span className='amount'>{renderCurrency(category.current_balance)}</span>
+              </StartingBalance>
+            </BalanceContainer>
+          )}
           <BodyContainer>
-            <TransactionContainer />
+            <TransactionContainer>
+              <TransactionList transactions={currentTransactions} />
+            </TransactionContainer>
             <StatsContainer>
-              <NewTransactionForm />
+              <NewTransactionForm category={category} />
             </StatsContainer>
           </BodyContainer>
         </Container>
@@ -146,6 +165,23 @@ const Category = ({
     </>
   )
 }
+
+const StartingBalance = styled.h3`
+  font-size: 22px;
+  font-weight: bold;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  .amount {
+    font-size: 28px;
+    font-weight: bold;
+    margin-left: 8px;
+    color: ${props => {
+    if (props.current < 0) return '#ee5253'
+    else return 'rgba(31, 209, 161, 1)'
+  }};
+  }
+`
 
 const EditButton = styled.button`
   padding: 8px 16px;
@@ -208,17 +244,6 @@ const BalanceContainer = styled.div`
   flex-direction: row;
   align-items: center;
   padding: 8px;
-`
-
-const StartingBalance = styled.h3`
-  font-size: 18px;
-  font-weight: normal;
-  .amount {
-    font-size: 28px;
-    font-weight: bold;
-    margin-left: 8px;
-    color: rgba(31, 209, 161, 1);
-  }
 `
 
 const TitleContainer = styled.div`
