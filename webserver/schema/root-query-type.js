@@ -36,11 +36,11 @@ const RootQuery = new GraphQLObjectType({
     getCategory: {
       type: CategoryType,
       args: {
-        name: { type: GraphQLString },
+        _id: { type: GraphQLString },
         user_id: { type: GraphQLString }
       },
-      resolve: async (parentValue, { name, user_id }) => {
-        return await CategoryModel.findOne({ name, user_id });
+      resolve: async (parentValue, { user_id, _id }) => {
+        return await CategoryModel.findOne({ user_id, _id });
       }
     },
     getCategories: {

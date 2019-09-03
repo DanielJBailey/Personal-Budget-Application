@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import styled from '@emotion/styled'
+import { keyframes } from '@emotion/core'
 import propTypes from 'prop-types'
 import { BodyContainer, BudgetContainer as TransactionContainer, StatsContainer } from './Home'
 import NewTransactionForm from './NewTransactionForm'
@@ -9,21 +10,24 @@ import { GET_CATEGORY, DELETE_CATEGORY, GET_CATEGORIES } from '../queries/index'
 import alert from 'sweetalert2'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/auth'
+import EditCategoryForm from './EditCategoryForm'
 
 const Category = ({
   match: {
-    params: { categoryName }
+    params: { category_id: categoryId }
   },
   history: { push }
 }) => {
   const { user } = useAuth()
   const [getCategoryInformation, { data: categoryData }] = useLazyQuery(GET_CATEGORY)
   const [category, setCategory] = useState(undefined)
+  // const [isUserCategory, setIsUserCategory] = useState(false)
+  const [editing, setEditing] = useState(false)
   // const [transactions, setTransactions] = useState([])
 
   useEffect(() => {
     if (user) {
-      getCategoryInformation({ variables: { user_id: user._id, name: categoryName } })
+      getCategoryInformation({ variables: { user_id: user._id, _id: categoryId } })
     }
   }, [])
 
@@ -32,6 +36,11 @@ const Category = ({
       setCategory(categoryData.getCategory)
     }
   }, [categoryData])
+
+  // useEffect(() => {
+  //   if (category && category.user_created) setIsUserCategory(true)
+  //   else setIsUserCategory(false)
+  // }, [category])
 
   const renderCurrency = number => {
     const formatter = new Intl.NumberFormat('en-US', {
@@ -76,18 +85,24 @@ const Category = ({
     <>
       {category && (
         <Container>
+          <Link className='back-button' to='/'>
+            <Back>
+              <i className='far fa-arrow-alt-circle-left icon' />
+              Back to dashboard
+            </Back>
+          </Link>
+          <Overlay editing={editing} onClick={() => setEditing(false)} />
+          <EditCategoryForm category={category} editing={editing} setEditing={setEditing} />
           <HeaderContainer>
             <TitleContainer>
               <CategoryTitle>{renderCategoryName(category.name)}</CategoryTitle>
               <CategoryDescription>{category.description}</CategoryDescription>
             </TitleContainer>
             <ButtonContainer>
-              <Link to='/'>
-                <Back>
-                  <i className='far fa-arrow-alt-circle-left icon' />
-                  Back to dashboard
-                </Back>
-              </Link>
+              <EditButton onClick={() => setEditing(!editing)}>
+                <i className='fas fa-edit icon' />
+                Edit Category
+              </EditButton>
               {category.user_created && (
                 <Mutation
                   mutation={DELETE_CATEGORY}
@@ -131,6 +146,53 @@ const Category = ({
     </>
   )
 }
+
+const EditButton = styled.button`
+  padding: 8px 16px;
+  height: 40px;
+  white-space: nowrap;
+  background-color: transparent;
+  border: 2px solid #333;
+  color: #333;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background-color: #333;
+    color: white;
+  }
+
+  .icon {
+    margin-right: 8px;
+    font-size: 16px;
+  }
+`
+
+const fadeIn = keyframes`
+  from {
+    opacity: 0
+  }
+  to {
+    opacity: 1
+  }
+`
+
+const Overlay = styled.div`
+  background-color: rgba(0, 0, 0, 0.6);
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 10;
+  display: ${props => (props.editing ? 'block' : 'none')};
+  animation: ${fadeIn} 0.5s linear;
+`
 
 const HR = styled.hr`
   width: 100%;
@@ -203,6 +265,7 @@ const HeaderContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  margin-top: 24px;
 `
 
 const ButtonContainer = styled.div`
@@ -214,13 +277,13 @@ const Container = styled.div`
   min-height: calc(100vh - 100px);
   height: 100%;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
   padding: 2em 1em;
   max-width: 1140px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
 `
 
 const Trash = styled.button`

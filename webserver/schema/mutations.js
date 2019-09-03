@@ -56,6 +56,28 @@ const mutation = new GraphQLObjectType({
         return await CategoryModel.findOneAndDelete({ budget_id, _id });
       }
     },
+    updateCategory: {
+      type: CategoryType,
+      args: {
+        _id: { type: GraphQLString },
+        name: { type: GraphQLString },
+        starting_balance: { type: GraphQLFloat },
+        description: { type: GraphQLString }
+      },
+      resolve: async (parentValue, { _id, name, starting_balance, description }) => {
+        if (name === 'Savings' || name === 'Income' || name === 'Emergency Funds') {
+          throw new Error('Category already exists with that name.');
+        } else {
+          const category = await CategoryModel.findOne({ _id });
+          let difference = category.starting_balance - category.current_balance;
+          category.name = name;
+          category.starting_balance = starting_balance;
+          category.current_balance = starting_balance - difference;
+          category.description = description;
+          return category.save();
+        }
+      }
+    },
     deleteBudget: {
       type: BudgetType,
       args: {
@@ -92,7 +114,7 @@ const mutation = new GraphQLObjectType({
             budget_id: newBudget._id,
             name: 'Savings',
             current_balance: 0.0,
-            description: 'Savings account balance.',
+            description: 'Balances in all savings accounts.',
             user_created: false
           }).save();
           await new CategoryModel({
@@ -100,7 +122,7 @@ const mutation = new GraphQLObjectType({
             budget_id: newBudget._id,
             name: 'Emergency Funds',
             current_balance: 0.0,
-            description: 'All savings used for emergencies.',
+            description: 'All savings used for emergency situations.',
             user_created: false
           }).save();
           return {
