@@ -7,8 +7,8 @@ const TransactionSchema = new Schema({
   credit: { type: Boolean, required: true },
   debit: { type: Boolean, required: true },
   description: { type: String, default: null },
-  date: { type: Date, default: null, required: true },
-  category_balance: { type: Number, required: true }
+  category_balance: { type: Number, required: true },
+  created_at: { type: Date, default: Date.now }
 });
 
 const TransactionModel = model('Transaction', TransactionSchema, 'transactions');

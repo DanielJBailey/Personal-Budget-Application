@@ -8,11 +8,10 @@ import propTypes from 'prop-types'
 import { useBudget } from '../context/budget'
 
 const initialState = {
-  amount: 0,
+  amount: '',
   credit: false,
   debit: true,
-  description: '',
-  date: ''
+  description: ''
 }
 
 const options = [{ label: 'Debit', value: 'debit' }, { label: 'Credit', value: 'credit' }]
@@ -107,10 +106,6 @@ const NewTransactionForm = ({ category }) => {
                 </option>
               ))}
             </Select>
-            <label className='label' htmlFor='date'>
-              Date
-            </label>
-            <input id='date' name='date' onChange={handleChange} required type='date' value={formValues.date} />
             <label className='label' htmlFor='description'>
               Description
             </label>

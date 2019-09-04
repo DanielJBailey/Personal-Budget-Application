@@ -111,11 +111,19 @@ const mutation = new GraphQLObjectType({
           throw new Error('Category already exists with that name.');
         } else {
           const category = await CategoryModel.findOne({ _id });
+          let previousStartingBalance = category.starting_balance;
           let difference = category.starting_balance - category.current_balance;
           category.name = name;
           category.starting_balance = starting_balance;
           category.current_balance = starting_balance - difference;
           category.description = description;
+          // update transactions for category to reflect new starting amount
+          const transactions = await TransactionModel.find({ category_id: _id });
+          let startingBalanceDifference = starting_balance - previousStartingBalance;
+          transactions.forEach(transaction => {
+            transaction.category_balance += startingBalanceDifference;
+            transaction.save();
+          });
           return category.save();
         }
       }

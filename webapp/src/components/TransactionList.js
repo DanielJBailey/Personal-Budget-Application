@@ -1,8 +1,17 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from '@emotion/styled'
 import propTypes from 'prop-types'
 
 const TransactionList = ({ transactions }) => {
+  const [sortedTransactions, setSortedTransactions] = useState([])
+
+  useEffect(() => {
+    if (transactions.length > 0) {
+      let sorted = transactions.sort((a, b) => b.created_at - a.created_at)
+      setSortedTransactions(sorted)
+    }
+  }, [transactions])
+
   const renderCurrency = number => {
     const formatter = new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -16,25 +25,25 @@ const TransactionList = ({ transactions }) => {
     <Table>
       <Head>
         <HeaderRow>
-          <HeaderCell>Date</HeaderCell>
-          <HeaderCell>Type</HeaderCell>
+          <HeaderCell center>Type</HeaderCell>
           <HeaderCell>Description</HeaderCell>
-          <HeaderCell>Amount</HeaderCell>
-          <HeaderCell>Balance</HeaderCell>
+          <HeaderCell>Transaction Amount</HeaderCell>
+          <HeaderCell>Account Balance</HeaderCell>
         </HeaderRow>
       </Head>
       <Body>
-        {transactions &&
-          transactions.map((transaction, i) => {
+        {sortedTransactions &&
+          sortedTransactions.map((transaction, i) => {
             return (
               <Row key={i}>
-                <Cell>{transaction.date}</Cell>
-                <Cell positive={transaction.credit}>
+                <Cell center positive={transaction.credit}>
                   <i className={transaction.debit ? `fas fa-minus` : 'fas fa-plus'} />
                 </Cell>
                 <Cell>{transaction.description}</Cell>
                 <Cell>{renderCurrency(transaction.amount)}</Cell>
-                <Cell>{renderCurrency(transaction.category_balance)}</Cell>
+                <Cell negative={parseFloat(transaction.category_balance) < 0}>
+                  {renderCurrency(transaction.category_balance)}
+                </Cell>
               </Row>
             )
           })}
@@ -56,7 +65,12 @@ const Cell = styled.td`
   padding: 16px;
   font-size: 14px;
   border: none;
+  text-align: ${props => {
+    if (props.center) return 'center'
+    else return 'inherit'
+  }};
   color: ${props => {
+    if (props.negative) return 'red'
     if (props.positive === true) return 'rgba(31, 209, 161, 1)'
     else if (props.positive === false) return '#ee5253'
     else return '333'
@@ -74,7 +88,10 @@ const HeaderCell = styled.th`
   font-size: 12px;
   font-weight: normal;
   padding: 16px;
-  text-align: left;
+  text-align: ${props => {
+    if (props.center) return 'center'
+    else return 'left'
+  }};
 `
 
 export default TransactionList
