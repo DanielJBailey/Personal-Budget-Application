@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styled from '@emotion/styled'
 import propTypes from 'prop-types'
-import BarChart from './BarChart'
+import BarChart from '../reusable/BarChart'
 
 const LeftOver = ({ categories }) => {
   const [remaining, setRemaining] = useState(0)

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { withRouter, Link } from 'react-router-dom'
 import { Mutation } from 'react-apollo'
-import { SIGNUP_USER } from '../queries/index'
+import { SIGNUP_USER } from '../../queries/index'
 import propTypes from 'prop-types'
-import { useAuth } from '../context/auth'
+import { useAuth } from '../../context/auth'
 import { Form, Container, Submit, Error } from './Login'
 
 const initialState = {

@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { withRouter, Link } from 'react-router-dom'
 import styled from '@emotion/styled'
 import { Mutation } from 'react-apollo'
-import { SIGNIN_USER } from '../queries/index'
+import { SIGNIN_USER } from '../../queries/index'
 import propTypes from 'prop-types'
-import { useAuth } from '../context/auth'
+import { useAuth } from '../../context/auth'
 
 const initialState = {
   username: '',

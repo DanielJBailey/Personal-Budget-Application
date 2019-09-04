@@ -1,12 +1,12 @@
 import React, { Suspense, lazy } from 'react'
 import { Route, Switch } from 'react-router-dom'
-import { ProtectedRoute } from './components/ProtectedRoute'
-import FetchUser from './components/FetchUser'
-const Home = lazy(() => import('./components/Home'))
-const Register = lazy(() => import('./components/Register'))
-const Login = lazy(() => import('./components/Login'))
-const Nav = lazy(() => import('./components/NavBar'))
-const Category = lazy(() => import('./components/Category'))
+import { ProtectedRoute } from './components/auth/ProtectedRoute'
+import FetchUser from './components/auth/FetchUser'
+const Home = lazy(() => import('./components/dashboard/Home'))
+const Register = lazy(() => import('./components/auth/Register'))
+const Login = lazy(() => import('./components/auth/Login'))
+const Nav = lazy(() => import('./components/reusable/NavBar'))
+const Category = lazy(() => import('./components/category-view/Category'))
 
 function AppRouter () {
   return (

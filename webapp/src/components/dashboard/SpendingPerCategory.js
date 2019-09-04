@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import propTypes from 'prop-types'
 import styled from '@emotion/styled'
-import BarChart from './BarChart'
+import BarChart from '../reusable/BarChart'
 
 const SpendingPerCategory = ({ categories }) => {
   const [sortedCategories, setSortedCategories] = useState([])

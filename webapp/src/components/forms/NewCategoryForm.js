@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import styled from '@emotion/styled'
-import { useAuth } from '../context/auth'
+import { useAuth } from '../../context/auth'
 import { Mutation } from 'react-apollo'
-import { ADD_CATEGORY, GET_CATEGORIES } from '../queries/index'
+import { ADD_CATEGORY, GET_CATEGORIES } from '../../queries/index'
 import alert from 'sweetalert2'
 import propTypes from 'prop-types'
 

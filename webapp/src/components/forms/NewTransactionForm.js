@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { Mutation } from 'react-apollo'
-import { ADD_TRANSACTION, GET_CATEGORIES, GET_CATEGORY, GET_TRANSACTIONS } from '../queries/index'
+import { ADD_TRANSACTION, GET_CATEGORIES, GET_CATEGORY, GET_TRANSACTIONS } from '../../queries/index'
 import styled from '@emotion/styled'
 import alert from 'sweetalert2'
-import { useAuth } from '../context/auth'
+import { useAuth } from '../../context/auth'
 import propTypes from 'prop-types'
 
 const initialState = {

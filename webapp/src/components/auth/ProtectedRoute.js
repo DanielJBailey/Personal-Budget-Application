@@ -1,7 +1,7 @@
 import React from 'react'
 import { Route, Redirect } from 'react-router-dom'
 import propTypes from 'prop-types'
-import { useAuth } from '../context/auth'
+import { useAuth } from '../../context/auth'
 
 export const ProtectedRoute = ({ component: Component, ...rest }) => {
   const { user } = useAuth()

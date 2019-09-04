@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import posed from 'react-pose'
 import { Mutation } from 'react-apollo'
-import { UPDATE_CATEGORY, GET_CATEGORY, GET_CATEGORIES, GET_TRANSACTIONS } from '../queries/index'
+import { UPDATE_CATEGORY, GET_CATEGORY, GET_CATEGORIES, GET_TRANSACTIONS } from '../../queries/index'
 import propTypes from 'prop-types'
 import styled from '@emotion/styled'
-import { useAuth } from '../context/auth'
+import { useAuth } from '../../context/auth'
 import alert from 'sweetalert2'
 
 const initialState = {

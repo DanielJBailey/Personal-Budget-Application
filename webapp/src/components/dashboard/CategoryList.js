@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
 import { useLazyQuery } from '@apollo/react-hooks'
-import { GET_CATEGORIES } from '../queries/index'
+import { GET_CATEGORIES } from '../../queries/index'
 import styled from '@emotion/styled'
 import { Link } from 'react-router-dom'
-import { useAuth } from '../context/auth'
+import { useAuth } from '../../context/auth'
 import propTypes from 'prop-types'
 import IndividualCategory from './IndividualCategory'
 

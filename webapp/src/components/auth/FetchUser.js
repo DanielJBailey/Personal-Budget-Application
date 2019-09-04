@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import propTypes from 'prop-types'
 import { useLazyQuery } from '@apollo/react-hooks'
-import { GET_USER } from '../queries/index'
-import { useAuth } from '../context/auth'
+import { GET_USER } from '../../queries/index'
+import { useAuth } from '../../context/auth'
 
 export const FetchUser = ({ children }) => {
   const [token, setToken] = useState('')

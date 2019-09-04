@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from '@emotion/styled'
 import { Link, withRouter } from 'react-router-dom'
-import { useAuth } from '../context/auth'
+import { useAuth } from '../../context/auth'
 import propTypes from 'prop-types'
 
 const NavBar = ({ history }) => {

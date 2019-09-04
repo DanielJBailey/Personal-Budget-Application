@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import styled from '@emotion/styled'
 import propTypes from 'prop-types'
-import { GET_TRANSACTIONS, DELETE_TRANSACTION, GET_CATEGORY } from '../queries'
+import { GET_TRANSACTIONS, DELETE_TRANSACTION, GET_CATEGORY } from '../../queries'
 import { Mutation } from 'react-apollo'
-import { useAuth } from '../context/auth'
+import { useAuth } from '../../context/auth'
 import alert from 'sweetalert2'
 import { useLazyQuery } from '@apollo/react-hooks'
 
