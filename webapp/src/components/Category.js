@@ -55,7 +55,7 @@ const Category = ({
   }
 
   useEffect(() => {
-    if (category && category.description) {
+    if (category) {
       getTransactions({ variables: { category_id: category._id } })
     }
   }, [category])

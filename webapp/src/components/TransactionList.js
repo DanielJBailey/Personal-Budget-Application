@@ -6,6 +6,7 @@ const TransactionList = ({ transactions }) => {
   const [sortedTransactions, setSortedTransactions] = useState([])
 
   useEffect(() => {
+    console.log(transactions)
     if (transactions.length > 0) {
       let sorted = transactions.sort((a, b) => b.created_at - a.created_at)
       setSortedTransactions(sorted)
