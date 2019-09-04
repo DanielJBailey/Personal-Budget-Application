@@ -39,6 +39,13 @@ const BalanceSection = styled.div`
   p {
     text-align: right;
     width: 100%;
+    @media (max-width: 425px) {
+      text-align: center;
+    }
+  }
+
+  @media (max-width: 425px) {
+    margin: 16px 0;
   }
 `
 
@@ -50,6 +57,12 @@ const ClickToView = styled.p`
   bottom: 0;
   right: 0;
   margin: 1em;
+  @media (max-width: 425px) {
+    position: static;
+    margin: 0;
+    width: 100%;
+    text-align: right;
+  }
 `
 
 const CategoryDescription = styled.p`
@@ -64,12 +77,18 @@ const TitleSection = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
+  @media (max-width: 425px) {
+    width: 100%;
+  }
 `
 
 const CategoryBalance = styled.h4`
   font-size: 32px;
   font-weight: 500;
   color: ${props => props.theme.green};
+  @media (max-width: 425px) {
+    font-size: 28px;
+  }
 `
 
 const Category = styled.div`
@@ -89,6 +108,12 @@ const Category = styled.div`
   position: relative;
   &:hover {
     box-shadow: 4px 8px 16px rgba(0, 0, 0, 0.15);
+  }
+  @media (max-width: 425px) {
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 16px;
   }
 `
 

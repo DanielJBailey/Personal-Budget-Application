@@ -154,6 +154,10 @@ export const Container = styled.div`
     font-weight: normal;
     margin-top: 12px;
   }
+
+  @media (max-width: 425px) {
+    padding: 2em;
+  }
 `
 
 export const Form = styled.form`

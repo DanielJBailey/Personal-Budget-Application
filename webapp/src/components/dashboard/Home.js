@@ -132,40 +132,42 @@ const Home = () => {
               <HeaderContainer>
                 {currentBudget && renderMonth(currentBudget.month)}
                 <ButtonContainer>
-                  <SelectMonth onChange={handleMonthChange} value={currentBudget._id}>
-                    {options.map((o, i) => (
-                      <option key={i} value={o.value}>
-                        {o.label}
-                      </option>
-                    ))}
-                  </SelectMonth>
-                  <NewBudget onClick={() => setAddingBudget(true)}>
-                    <i className='fas fa-plus icon' />
-                    Create New Budget
-                  </NewBudget>
-                  {currentBudget && (
-                    <Mutation
-                      mutation={DELETE_BUDGET}
-                      refetchQueries={() => {
-                        return [
-                          {
-                            query: GET_BUDGETS,
-                            variables: { creator: user._id }
-                          }
-                        ]
-                      }}
-                      variables={{ creator: user._id, _id: currentBudget._id }}
-                    >
-                      {deleteBudget => {
-                        return (
-                          <Trash onClick={() => handleDeleteConfirm(deleteBudget)}>
-                            <i className='far fa-trash-alt icon' />
-                            Trash Budget
-                          </Trash>
-                        )
-                      }}
-                    </Mutation>
-                  )}
+                  <InnerButtonContainer>
+                    <SelectMonth onChange={handleMonthChange} value={currentBudget._id}>
+                      {options.map((o, i) => (
+                        <option key={i} value={o.value}>
+                          {o.label}
+                        </option>
+                      ))}
+                    </SelectMonth>
+                    <NewBudget onClick={() => setAddingBudget(true)}>
+                      <i className='fas fa-plus icon' />
+                      Create New Budget
+                    </NewBudget>
+                    {currentBudget && (
+                      <Mutation
+                        mutation={DELETE_BUDGET}
+                        refetchQueries={() => {
+                          return [
+                            {
+                              query: GET_BUDGETS,
+                              variables: { creator: user._id }
+                            }
+                          ]
+                        }}
+                        variables={{ creator: user._id, _id: currentBudget._id }}
+                      >
+                        {deleteBudget => {
+                          return (
+                            <Trash onClick={() => handleDeleteConfirm(deleteBudget)}>
+                              <i className='far fa-trash-alt icon' />
+                              Trash Budget
+                            </Trash>
+                          )
+                        }}
+                      </Mutation>
+                    )}
+                  </InnerButtonContainer>
                 </ButtonContainer>
               </HeaderContainer>
               <BodyContainer>
@@ -193,6 +195,16 @@ const Home = () => {
     </Container>
   )
 }
+
+const InnerButtonContainer = styled.div`
+  width: 100%;
+  @media (min-width: 769px) {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+  }
+`
 
 export const BodyContainer = styled.div`
   display: flex;
@@ -259,6 +271,11 @@ const NewBudget = styled.button`
     background-color: #333;
     color: white;
   }
+  @media (max-width: 425px) {
+    width: 100%;
+    margin-bottom: 8px;
+    margin-right: 0;
+  }
 `
 
 const Trash = styled.button`
@@ -280,6 +297,9 @@ const Trash = styled.button`
     background-color: ${props => props.theme.red};
     color: white;
   }
+  @media (max-width: 425px) {
+    width: 100%;
+  }
 `
 
 const MonthDisplay = styled.span`
@@ -290,6 +310,9 @@ const MonthDisplay = styled.span`
 const Month = styled.h1`
   font-size: 48px;
   line-height: 1;
+  @media (max-width: 425px) {
+    font-size: 28px;
+  }
 `
 const Year = styled.h2`
   line-height: 1;
@@ -309,6 +332,11 @@ const SelectMonth = styled.select`
   border: 1px solid #dcdcdc;
   border-radius: none;
   cursor: pointer;
+  @media (max-width: 768px) {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 16px;
+  }
 `
 
 const HeaderContainer = styled.div`
@@ -345,6 +373,10 @@ const Container = styled.div`
   padding: 2em 1em;
   max-width: 1140px;
   margin: 0 auto;
+
+  @media (max-width: 768px) {
+    padding: 2em 1em;
+  }
 `
 
 export default withRouter(Home)

@@ -66,6 +66,9 @@ const LogOut = styled.button`
 const Logo = styled.div`
   font-size: 24px;
   font-weight: bold;
+  @media (max-width: 320px) {
+    margin-bottom: 24px;
+  }
 `
 
 const SmallTitle = styled.span`
@@ -82,6 +85,11 @@ const Navigation = styled.div`
   background-color: white;
   border-bottom: 1px solid #dcdcdc;
   padding: 1.5em;
+  @media (max-width: 320px) {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
   /* box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1); */
 `
 

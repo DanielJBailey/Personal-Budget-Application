@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styled from '@emotion/styled'
 import { keyframes } from '@emotion/core'
 import propTypes from 'prop-types'
-import { BodyContainer, BudgetContainer as TransactionContainer, StatsContainer } from '../dashboard/Home'
+import { BodyContainer } from '../dashboard/Home'
 import NewTransactionForm from '../forms/NewTransactionForm'
 import { useLazyQuery } from '@apollo/react-hooks'
 import { Mutation } from 'react-apollo'
@@ -258,11 +258,38 @@ const BalanceContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 8px;
+
+  @media (max-width: 425px) {
+    flex-direction: column;
+  }
+`
+
+export const TransactionContainer = styled.div`
+  flex: 2;
+  width: 100%;
+  margin-right: 24px;
+  @media (max-width: 768px) {
+    overflow: hidden;
+    overflow-x: scroll;
+    order: 2;
+    margin-right: 0;
+  }
+`
+
+export const StatsContainer = styled.div`
+  flex: 1;
+  width: 100%;
+  @media (max-width: 768px) {
+    order: 1;
+  }
 `
 
 const TitleContainer = styled.div`
   display: flex;
   flex-direction: column;
+  @media (max-width: 425px) {
+    margin-bottom: 16px;
+  }
 `
 
 const CategoryDescription = styled.p`
@@ -305,6 +332,11 @@ const HeaderContainer = styled.div`
   justify-content: space-between;
   width: 100%;
   margin-top: 24px;
+  @media (max-width: 425px) {
+    flex-direction: column;
+    width: 100%;
+    align-items: flex-start;
+  }
 `
 
 const ButtonContainer = styled.div`
@@ -344,6 +376,9 @@ const Trash = styled.button`
   &:hover {
     background-color: ${props => props.theme.red};
     color: white;
+  }
+  @media (max-width: 425px) {
+    margin-left: 8px;
   }
 `
 

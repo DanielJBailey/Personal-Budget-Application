@@ -127,6 +127,11 @@ const Table = styled.table`
   border-radius: 5px;
   border-collapse: collapse;
   background-color: white;
+  @media (max-width: 768px) {
+    margin-top: 2em;
+    overflow: hidden;
+    overflow-x: scroll;
+  }
 `
 
 const Body = styled.tbody``
@@ -134,6 +139,7 @@ const Cell = styled.td`
   padding: 16px;
   font-size: 14px;
   border: none;
+  white-space: nowrap;
   text-align: ${props => {
     if (props.center) return 'center'
     else return 'inherit'
@@ -167,6 +173,7 @@ const HeaderCell = styled.th`
   font-size: 12px;
   font-weight: normal;
   padding: 16px;
+  white-space: nowrap;
   text-align: ${props => {
     if (props.center) return 'center'
     else return 'left'
