@@ -172,3 +172,19 @@ export const GET_TRANSACTIONS = gql`
     }
   }
 `
+
+export const DELETE_TRANSACTION = gql`
+  mutation($category_id: String!, $_id: String!) {
+    deleteTransaction(category_id: $category_id, _id: $_id) {
+      _id
+      category_id
+      amount
+      debit
+      credit
+      description
+      category_balance
+      created_at
+      budget_id
+    }
+  }
+`

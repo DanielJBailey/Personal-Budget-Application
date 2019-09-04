@@ -11,6 +11,7 @@ const initialState = {
   amount: '',
   credit: false,
   debit: true,
+
   description: ''
 }
 
@@ -99,7 +100,7 @@ const NewTransactionForm = ({ category, budget_id: budgetId }) => {
             <label className='label' htmlFor='type'>
               Transaction Type
             </label>
-            <Select id='type' onChange={handleSelect}>
+            <Select id='type' onChange={e => handleSelect(e)} value={formValues.credit ? 'credit' : 'debit'}>
               {options.map((o, i) => (
                 <option key={i} value={o.value}>
                   {o.label}

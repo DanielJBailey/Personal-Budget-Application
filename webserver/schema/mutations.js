@@ -19,6 +19,43 @@ const createToken = (user, secret, expiresIn) => {
 const mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
+    deleteTransaction: {
+      type: TransactionType,
+      args: {
+        _id: { type: GraphQLString },
+        category_id: { type: GraphQLString }
+      },
+      resolve: async (parentValue, { _id, category_id }) => {
+        const category = await CategoryModel.findOne({ _id: category_id });
+        // Find current transaction
+        const transaction = await TransactionModel.findOne({ _id });
+        // Transactions created after current transaction
+        const transactions = await TransactionModel.find({ created_at: { $gt: transaction.created_at } });
+        // // if transaction is credit, recredit
+        if (transaction.credit) {
+          // remove amount from category
+          category.current_balance -= transaction.amount;
+          category.save();
+          // update recent transactions with updated amount
+          if (transactions.length > 0) {
+            transactions.forEach(t => {
+              t.category_balance -= transaction.amount;
+              t.save();
+            });
+          }
+        } else {
+          category.current_balance += transaction.amount;
+          category.save();
+          if (transactions.length > 0) {
+            transactions.forEach(t => {
+              t.category_balance += transaction.amount;
+              t.save();
+            });
+          }
+        }
+        return await TransactionModel.findOneAndDelete({ category_id, _id });
+      }
+    },
     addTransaction: {
       type: TransactionType,
       args: {
@@ -79,6 +116,11 @@ const mutation = new GraphQLObjectType({
         if (category) {
           throw new Error('Category already exists for this budget!');
         } else {
+          name = name
+            .toLowerCase()
+            .split(' ')
+            .map(word => word[0].toUpperCase() + word.substring(1))
+            .join(' ');
           return new CategoryModel({
             user_id,
             description,

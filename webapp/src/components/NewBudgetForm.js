@@ -27,7 +27,7 @@ const NewBudgetForm = ({ setBudgets, closeForm, budgets }) => {
       December: 12
     }
     let d = new Date()
-    let month = Object.keys(months).find(key => months[key] === d.getMonth())
+    let month = Object.keys(months).find(key => months[key] === d.getMonth() + 1)
     let year = d.getFullYear().toString()
     setFormValues({ month, year })
   }, [])

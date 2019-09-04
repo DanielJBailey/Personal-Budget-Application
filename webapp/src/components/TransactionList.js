@@ -1,17 +1,26 @@
 import React, { useState, useEffect } from 'react'
 import styled from '@emotion/styled'
 import propTypes from 'prop-types'
+import { GET_TRANSACTIONS, DELETE_TRANSACTION, GET_CATEGORY } from '../queries'
+import { Mutation } from 'react-apollo'
+import { useAuth } from '../context/auth'
+import alert from 'sweetalert2'
+import { useLazyQuery } from '@apollo/react-hooks'
 
-const TransactionList = ({ transactions }) => {
-  const [sortedTransactions, setSortedTransactions] = useState([])
+const TransactionList = ({ categoryId }) => {
+  const [getTransactions, { data }] = useLazyQuery(GET_TRANSACTIONS)
+  const [transactions, setTransactions] = useState([])
+  const { user } = useAuth()
 
   useEffect(() => {
-    console.log(transactions)
-    if (transactions.length > 0) {
-      let sorted = transactions.sort((a, b) => b.created_at - a.created_at)
-      setSortedTransactions(sorted)
+    if (categoryId) getTransactions({ variables: { category_id: categoryId } })
+  }, [categoryId])
+
+  useEffect(() => {
+    if (data && data.getTransactions) {
+      setTransactions(data.getTransactions)
     }
-  }, [transactions])
+  }, [data])
 
   const renderCurrency = number => {
     const formatter = new Intl.NumberFormat('en-US', {
@@ -22,6 +31,26 @@ const TransactionList = ({ transactions }) => {
     return formatter.format(number)
   }
 
+  const handleDeleteConfirm = async deleteTransaction => {
+    alert
+      .fire({
+        title: 'Are you sure?',
+        text: `This will delete the transaction, and cannot be reverted!`,
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#333',
+        cancelButtonColor: '#ee5253',
+        confirmButtonText: 'Confirm'
+      })
+      .then(async result => {
+        if (result.value) {
+          deleteTransaction().then(() => {
+            alert.fire('Transaction Deleted', `You have successfully deleted the transaction`, 'success')
+          })
+        }
+      })
+  }
+
   return (
     <Table>
       <Head>
@@ -30,11 +59,12 @@ const TransactionList = ({ transactions }) => {
           <HeaderCell>Description</HeaderCell>
           <HeaderCell>Transaction Amount</HeaderCell>
           <HeaderCell>Account Balance</HeaderCell>
+          <HeaderCell center>Actions</HeaderCell>
         </HeaderRow>
       </Head>
       <Body>
-        {sortedTransactions &&
-          sortedTransactions.map((transaction, i) => {
+        {transactions &&
+          transactions.map((transaction, i) => {
             return (
               <Row key={i}>
                 <Cell center positive={transaction.credit}>
@@ -45,6 +75,28 @@ const TransactionList = ({ transactions }) => {
                 <Cell negative={parseFloat(transaction.category_balance) < 0}>
                   {renderCurrency(transaction.category_balance)}
                 </Cell>
+                <Cell>
+                  <Mutation
+                    mutation={DELETE_TRANSACTION}
+                    refetchQueries={() => {
+                      return [
+                        {
+                          query: GET_CATEGORY,
+                          variables: { user_id: user._id, _id: categoryId }
+                        },
+                        {
+                          query: GET_TRANSACTIONS,
+                          variables: { category_id: categoryId }
+                        }
+                      ]
+                    }}
+                    variables={{ category_id: transaction.category_id, _id: transaction._id }}
+                  >
+                    {deleteTransaction => {
+                      return <ActionButton onClick={() => handleDeleteConfirm(deleteTransaction)}>Remove</ActionButton>
+                    }}
+                  </Mutation>
+                </Cell>
               </Row>
             )
           })}
@@ -52,6 +104,22 @@ const TransactionList = ({ transactions }) => {
     </Table>
   )
 }
+
+const ActionButton = styled.button`
+  outline: none;
+  border: 1px solid #333;
+  padding: 5px;
+  background-color: transparent;
+  border-radius: 5px;
+  font-size: 12px;
+  width: 100%;
+  cursor: pointer;
+  &:hover {
+    border-color: #ee5253;
+    background-color: #ee5253;
+    color: white;
+  }
+`
 
 const Table = styled.table`
   width: 100%;
@@ -76,6 +144,16 @@ const Cell = styled.td`
     else if (props.positive === false) return '#ee5253'
     else return '333'
   }};
+
+  .edit {
+    margin-right: 16px;
+    cursor: pointer;
+  }
+
+  .trash {
+    color: #ee5253;
+    cursor: pointer;
+  }
 `
 
 const Head = styled.thead``
@@ -98,5 +176,5 @@ const HeaderCell = styled.th`
 export default TransactionList
 
 TransactionList.propTypes = {
-  transactions: propTypes.array
+  categoryId: propTypes.string
 }

@@ -87,10 +87,6 @@ const Category = ({
       })
   }
 
-  const renderCategoryName = categoryName => {
-    return categoryName.split(' ').map(w => w.split('')[0].toUpperCase() + w.slice(1, w.length))
-  }
-
   return (
     <>
       {category && (
@@ -109,7 +105,7 @@ const Category = ({
           )}
           <HeaderContainer>
             <TitleContainer>
-              <CategoryTitle>{renderCategoryName(category.name)}</CategoryTitle>
+              <CategoryTitle>{category.name}</CategoryTitle>
               <CategoryDescription>{category.description}</CategoryDescription>
             </TitleContainer>
             <ButtonContainer>
@@ -154,7 +150,7 @@ const Category = ({
           )}
           <BodyContainer>
             <TransactionContainer>
-              <TransactionList transactions={currentTransactions} />
+              <TransactionList categoryId={categoryId} transactions={currentTransactions} />
             </TransactionContainer>
             <StatsContainer>
               <NewTransactionForm budget_id={category.budget_id} category={category} />

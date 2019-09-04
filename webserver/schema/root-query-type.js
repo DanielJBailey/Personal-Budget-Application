@@ -20,7 +20,9 @@ const RootQuery = new GraphQLObjectType({
         category_id: { type: GraphQLString }
       },
       resolve: async (parentValue, { category_id }) => {
-        return await TransactionModel.find({ category_id });
+        const transactions = await TransactionModel.find({ category_id });
+        transactions.sort((a, b) => b.created_at - a.created_at);
+        return transactions;
       }
     },
     getUser: {

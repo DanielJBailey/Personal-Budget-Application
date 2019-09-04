@@ -15,6 +15,7 @@ const initialState = {
 
 const NewCategoryForm = ({ categories, setCategories }) => {
   const [formValues, setFormValues] = useState({ ...initialState })
+  const [showErrors, setShowErrors] = useState(false)
   const { currentBudget } = useBudget()
   const { user } = useAuth()
 
@@ -35,6 +36,10 @@ const NewCategoryForm = ({ categories, setCategories }) => {
         setFormValues({ ...initialState })
       }
     })
+  }
+
+  const renderErrors = errors => {
+    return errors.map((err, i) => <Error key={i}>{err.message}</Error>)
   }
 
   return (
@@ -59,9 +64,16 @@ const NewCategoryForm = ({ categories, setCategories }) => {
           }}
         >
           {(addCategory, { loading, error, data }) => {
+            if (error) {
+              setShowErrors(true)
+            } else {
+              setShowErrors(false)
+            }
             return (
               <Form onSubmit={e => handleSubmit(e, addCategory)}>
                 <h4>Add Category</h4>
+                {error && showErrors && renderErrors(error.graphQLErrors)}
+
                 <input
                   name='name'
                   onChange={handleChange}
@@ -94,6 +106,17 @@ const NewCategoryForm = ({ categories, setCategories }) => {
     </>
   )
 }
+
+const Error = styled.div`
+  background-color: #ffe0df;
+  color: #ff0000;
+  width: 100%;
+  text-align: center;
+  padding: 16px;
+  border-radius: 5px;
+  margin-bottom: 16px;
+  font-size: 14px;
+`
 
 const Submit = styled.button`
   width: 100%;

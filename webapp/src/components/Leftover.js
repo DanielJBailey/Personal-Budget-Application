@@ -33,11 +33,27 @@ const LeftOver = ({ categories }) => {
     <>
       <Card>
         <h4>Amount Leftover To Budget</h4>
-        <BarChart negative={negative} remaining={remaining} startingAmount={startingAmount} />
+        {remaining === 0 ? (
+          <EveryDollar>ALL BALANCED</EveryDollar>
+        ) : (
+          <BarChart negative={negative} remaining={remaining} startingAmount={startingAmount} />
+        )}
       </Card>
     </>
   )
 }
+
+const EveryDollar = styled.p`
+  font-size: 18px;
+  font-weight: bold;
+  margin: 16px 0;
+  color: rgba(31, 209, 161, 1);
+  border: 2px solid rgba(31, 209, 161, 1);
+  border-radius: 5px;
+  padding: 16px;
+  width: 100%;
+  text-align: center;
+`
 
 const Card = styled.div`
   width: 100%;
