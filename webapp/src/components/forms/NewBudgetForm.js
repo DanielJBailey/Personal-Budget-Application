@@ -5,6 +5,7 @@ import { useAuth } from '../../context/auth'
 import { ADD_BUDGET, GET_BUDGETS } from '../../queries/index'
 import propTypes from 'prop-types'
 import alert from 'sweetalert2'
+import { Error } from '../styles/base'
 
 const NewBudgetForm = ({ setBudgets, closeForm, budgets }) => {
   const [formValues, setFormValues] = useState({})
@@ -144,17 +145,6 @@ const Close = styled.button`
   .icon {
     margin-right: 8px;
   }
-`
-
-export const Error = styled.div`
-  background-color: ${props => props.theme.errorBackground};
-  color: ${props => props.theme.errorText};
-  width: 350px;
-  text-align: center;
-  padding: 16px;
-  border-radius: 5px;
-  margin-top: 16px;
-  font-size: 14px;
 `
 
 export const Submit = styled.button`

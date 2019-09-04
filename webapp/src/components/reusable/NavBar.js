@@ -24,26 +24,40 @@ const NavBar = ({ history }) => {
       {!user._id && (
         <UnAuth>
           <Link to='/register'>
-            <NavItem register>Register</NavItem>
+            <NavItem register>
+              <i className='fas fa-user-plus icon' /> Register
+            </NavItem>
           </Link>
           <Link to='/login'>
-            <NavItem>Log In</NavItem>
+            <NavItem>
+              <i className='fas fa-sign-in-alt icon' />
+              Log In
+            </NavItem>
           </Link>
         </UnAuth>
       )}
-      {user._id && <LogOut onClick={() => logOutUser()}>Log Out</LogOut>}
+      {user._id && (
+        <LogOut onClick={() => logOutUser()}>
+          <i className='fas fa-sign-out-alt icon' />
+          Log Out
+        </LogOut>
+      )}
     </Navigation>
   )
 }
 
 const LogOut = styled.button`
-  border: none;
   background-color: #333;
   color: white;
-  padding: 16px;
+  height: 40px;
   border-radius: 5px;
-  font-size: 16px;
+  font-size: 14px;
+  padding: 0 16px;
   cursor: pointer;
+  .icon {
+    font-size: 14px;
+    margin-right: 8px;
+  }
   &:hover {
     opacity: 0.9;
   }
@@ -78,22 +92,26 @@ const UnAuth = styled.div`
 
 const NavItem = styled.button`
   cursor: pointer;
-  height: 100%;
-  padding: 16px;
-  background-color: ${props => {
-    if (props.register) return props.theme.green
-    else return '#333'
-  }};
-  color: white;
-  border: none;
+  height: 40px;
+  padding: 0 16px;
+  background-color: transparent;
+  color: #333;
+  border: 2px solid #333;
   border-radius: 5px;
-  font-size: 16px;
+  font-size: 14px;
   margin-right: ${props => {
     if (props.register) return '8px'
     else return '0'
   }};
   &:hover {
-    opacity: 0.9;
+    background-color: #333;
+    color: white;
+  }
+  .icon {
+    margin-right: 8px;
+    font-size: 14px;
+    width: 16px;
+    height: 16px;
   }
 `
 

@@ -5,6 +5,7 @@ import styled from '@emotion/styled'
 import alert from 'sweetalert2'
 import { useAuth } from '../../context/auth'
 import propTypes from 'prop-types'
+import { Error } from '../styles/base'
 
 const initialState = {
   amount: '',
@@ -123,17 +124,6 @@ const NewTransactionForm = ({ category, budget_id: budgetId }) => {
     </Mutation>
   )
 }
-
-const Error = styled.div`
-  background-color: ${props => props.theme.errorBackground};
-  color: ${props => props.theme.errorText};
-  width: 100%;
-  text-align: center;
-  padding: 16px;
-  border-radius: 5px;
-  margin-bottom: 16px;
-  font-size: 14px;
-`
 
 const Select = styled.select`
   width: 100%;

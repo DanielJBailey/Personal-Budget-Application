@@ -5,6 +5,7 @@ import { Mutation } from 'react-apollo'
 import { ADD_CATEGORY, GET_CATEGORIES } from '../../queries/index'
 import alert from 'sweetalert2'
 import propTypes from 'prop-types'
+import { Error } from '../styles/base'
 
 const initialState = {
   name: '',
@@ -104,17 +105,6 @@ const NewCategoryForm = ({ categories, setCategories, currentBudget }) => {
     </>
   )
 }
-
-const Error = styled.div`
-  background-color: ${props => props.theme.errorBackground};
-  color: ${props => props.theme.errorText};
-  width: 100%;
-  text-align: center;
-  padding: 16px;
-  border-radius: 5px;
-  margin-bottom: 16px;
-  font-size: 14px;
-`
 
 const Submit = styled.button`
   width: 100%;
