@@ -266,8 +266,8 @@ const Trash = styled.button`
   height: 40px;
   white-space: nowrap;
   background-color: transparent;
-  border: 2px solid #ee5253;
-  color: #ee5253;
+  border: 2px solid ${props => props.theme.red};
+  color: ${props => props.theme.red};
   font-size: 14px;
   cursor: pointer;
   border-radius: 5px;
@@ -277,7 +277,7 @@ const Trash = styled.button`
   }
 
   &:hover {
-    background-color: #ee5253;
+    background-color: ${props => props.theme.red};
     color: white;
   }
 `
@@ -294,7 +294,7 @@ const Month = styled.h1`
 const Year = styled.h2`
   line-height: 1;
   font-size: 18px;
-  background-color: rgba(31, 209, 161, 1);
+  background-color: ${props => props.theme.green};
   padding: 5px;
   border-radius: 5px;
   margin-left: 8px;

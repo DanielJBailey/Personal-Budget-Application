@@ -173,8 +173,8 @@ const StartingBalance = styled.h3`
     font-weight: bold;
     margin-left: 8px;
     color: ${props => {
-    if (props.current < 0) return '#ee5253'
-    else return 'rgba(31, 209, 161, 1)'
+    if (props.current < 0) return props.theme.red
+    else return props.theme.green
   }};
   }
 `
@@ -312,8 +312,8 @@ const Trash = styled.button`
   height: 40px;
   white-space: nowrap;
   background-color: transparent;
-  border: 2px solid #ee5253;
-  color: #ee5253;
+  border: 2px solid ${props => props.theme.red};
+  color: ${props => props.theme.red};
   font-size: 14px;
   cursor: pointer;
   border-radius: 5px;
@@ -324,7 +324,7 @@ const Trash = styled.button`
   }
 
   &:hover {
-    background-color: #ee5253;
+    background-color: ${props => props.theme.red};
     color: white;
   }
 `

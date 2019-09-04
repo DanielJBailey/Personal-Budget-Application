@@ -134,8 +134,8 @@ const EditCategoryForm = ({ editing, category, setEditing }) => {
 }
 
 const Error = styled.div`
-  background-color: #ffe0df;
-  color: #ff0000;
+  background-color: ${props => props.theme.errorBackground};
+  color: ${props => props.theme.errorText};
   width: 100%;
   text-align: center;
   padding: 16px;
@@ -169,8 +169,8 @@ const Cancel = styled.button`
   height: 40px;
   white-space: nowrap;
   background-color: transparent;
-  border: 2px solid #ee5253;
-  color: #ee5253;
+  border: 2px solid ${props => props.theme.red};
+  color: ${props => props.theme.red};
   font-size: 14px;
   cursor: pointer;
   border-radius: 5px;
@@ -181,7 +181,7 @@ const Cancel = styled.button`
   }
 
   &:hover {
-    background-color: #ee5253;
+    background-color: ${props => props.theme.red};
     color: white;
   }
 `

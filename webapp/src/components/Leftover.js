@@ -47,8 +47,8 @@ const EveryDollar = styled.p`
   font-size: 18px;
   font-weight: bold;
   margin: 16px 0;
-  color: rgba(31, 209, 161, 1);
-  border: 2px solid rgba(31, 209, 161, 1);
+  color: ${props => props.theme.green};
+  border: 2px solid ${props => props.theme.green};
   border-radius: 5px;
   padding: 16px;
   width: 100%;

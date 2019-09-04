@@ -125,8 +125,8 @@ const NewTransactionForm = ({ category, budget_id: budgetId }) => {
 }
 
 const Error = styled.div`
-  background-color: #ffe0df;
-  color: #ff0000;
+  background-color: ${props => props.theme.errorBackground};
+  color: ${props => props.theme.errorText};
   width: 100%;
   text-align: center;
   padding: 16px;

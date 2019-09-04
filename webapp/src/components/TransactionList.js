@@ -115,8 +115,8 @@ const ActionButton = styled.button`
   width: 100%;
   cursor: pointer;
   &:hover {
-    border-color: #ee5253;
-    background-color: #ee5253;
+    border-color: ${props => props.theme.red};
+    background-color: ${props => props.theme.red};
     color: white;
   }
 `
@@ -139,10 +139,10 @@ const Cell = styled.td`
     else return 'inherit'
   }};
   color: ${props => {
-    if (props.negative) return 'red'
-    if (props.positive === true) return 'rgba(31, 209, 161, 1)'
-    else if (props.positive === false) return '#ee5253'
-    else return '333'
+    if (props.negative) return props.theme.red
+    if (props.positive === true) return props.theme.green
+    else if (props.positive === false) return props.theme.red
+    else return '#333'
   }};
 
   .edit {
@@ -151,7 +151,7 @@ const Cell = styled.td`
   }
 
   .trash {
-    color: #ee5253;
+    color: ${props => props.theme.red};
     cursor: pointer;
   }
 `

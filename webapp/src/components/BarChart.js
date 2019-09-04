@@ -61,7 +61,7 @@ const Chart = styled.div`
   height: 35px;
   width: 100%;
   background-color: ${props => {
-    if (props.remaining < 0) return '#ee5253'
+    if (props.remaining < 0) return props.theme.red
     else return 'rgba(0, 0, 0, 0.05)'
   }};
   position: relative;
@@ -85,14 +85,14 @@ const Bar = styled.div`
   background-color: ${props => {
     if (props.spending) {
       if (props.width <= 100) {
-        return '#1dd1a1'
-      } else return '#ee5253'
+        return props.theme.green
+      } else return props.theme.red
     } else {
       if (props.width < 10) {
-        return '#ee5253'
+        return props.theme.red
       } else if (props.width < 30) {
-        return '#f6e58d'
-      } else return '#1dd1a1'
+        return props.theme.yellow
+      } else return props.theme.green
     }
   }};
 `

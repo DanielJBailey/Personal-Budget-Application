@@ -81,7 +81,7 @@ const NavItem = styled.button`
   height: 100%;
   padding: 16px;
   background-color: ${props => {
-    if (props.register) return '#1dd1a1'
+    if (props.register) return props.theme.green
     else return '#333'
   }};
   color: white;

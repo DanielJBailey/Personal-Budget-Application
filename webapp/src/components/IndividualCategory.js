@@ -69,7 +69,7 @@ const TitleSection = styled.div`
 const CategoryBalance = styled.h4`
   font-size: 32px;
   font-weight: 500;
-  color: rgba(31, 209, 161, 1);
+  color: ${props => props.theme.green};
 `
 
 const Category = styled.div`
