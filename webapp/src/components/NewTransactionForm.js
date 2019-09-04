@@ -5,7 +5,6 @@ import styled from '@emotion/styled'
 import alert from 'sweetalert2'
 import { useAuth } from '../context/auth'
 import propTypes from 'prop-types'
-import { useBudget } from '../context/budget'
 
 const initialState = {
   amount: '',
@@ -21,7 +20,6 @@ const NewTransactionForm = ({ category, budget_id: budgetId }) => {
   const [formValues, setFormValues] = useState({ ...initialState })
   const [showErrors, setShowErrors] = useState(false)
   const { user } = useAuth()
-  const { currentBudget } = useBudget()
 
   const handleChange = ({ target: { name, value } }) => {
     setFormValues({ ...formValues, [name]: value })
@@ -54,7 +52,7 @@ const NewTransactionForm = ({ category, budget_id: budgetId }) => {
         return [
           {
             query: GET_CATEGORIES,
-            variables: { user_id: user._id, budget_id: currentBudget._id }
+            variables: { user_id: user._id, budget_id: budgetId }
           },
           {
             query: GET_CATEGORY,

@@ -173,7 +173,11 @@ const Home = () => {
                   <CategoryList categories={categories} currentBudget={currentBudget} setCategories={setCategories} />
                 </BudgetContainer>
                 <StatsContainer>
-                  <NewCategoryForm categories={categories} setCategories={setCategories} />
+                  <NewCategoryForm
+                    categories={categories}
+                    currentBudget={currentBudget}
+                    setCategories={setCategories}
+                  />
                   {categories.length > 3 && (
                     <>
                       <LeftOver categories={categories} />

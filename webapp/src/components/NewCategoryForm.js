@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import styled from '@emotion/styled'
 import { useAuth } from '../context/auth'
-import { useBudget } from '../context/budget'
 import { Mutation } from 'react-apollo'
 import { ADD_CATEGORY, GET_CATEGORIES } from '../queries/index'
 import alert from 'sweetalert2'
@@ -13,10 +12,9 @@ const initialState = {
   starting_balance: ''
 }
 
-const NewCategoryForm = ({ categories, setCategories }) => {
+const NewCategoryForm = ({ categories, setCategories, currentBudget }) => {
   const [formValues, setFormValues] = useState({ ...initialState })
   const [showErrors, setShowErrors] = useState(false)
-  const { currentBudget } = useBudget()
   const { user } = useAuth()
 
   const handleChange = ({ target: { name, value } }) => {
@@ -160,5 +158,6 @@ export default NewCategoryForm
 
 NewCategoryForm.propTypes = {
   categories: propTypes.array,
-  setCategories: propTypes.func
+  setCategories: propTypes.func,
+  currentBudget: propTypes.object
 }
