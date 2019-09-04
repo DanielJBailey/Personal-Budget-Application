@@ -2,6 +2,7 @@ const { model, Schema, SchemaTypes } = require('mongoose');
 
 const TransactionSchema = new Schema({
   id: { type: SchemaTypes.ObjectId },
+  budget_id: { type: String, required: true },
   category_id: { type: String, required: true },
   amount: { type: Number, required: true },
   credit: { type: Boolean, required: true },

@@ -16,7 +16,7 @@ const initialState = {
 
 const options = [{ label: 'Debit', value: 'debit' }, { label: 'Credit', value: 'credit' }]
 
-const NewTransactionForm = ({ category }) => {
+const NewTransactionForm = ({ category, budget_id: budgetId }) => {
   const [formValues, setFormValues] = useState({ ...initialState })
   const [showErrors, setShowErrors] = useState(false)
   const { user } = useAuth()
@@ -34,7 +34,6 @@ const NewTransactionForm = ({ category }) => {
 
   const handleSubmit = (e, addTransaction) => {
     e.preventDefault()
-
     addTransaction().then(async ({ data, loading }) => {
       if (!loading && data && data.addTransaction) {
         alert.fire('Transaction Added!', `You have successfully added the transaction.`, 'success')
@@ -69,7 +68,8 @@ const NewTransactionForm = ({ category }) => {
       variables={{
         ...formValues,
         category_id: category._id,
-        amount: parseFloat(formValues.amount)
+        amount: parseFloat(formValues.amount),
+        budget_id: budgetId
       }}
     >
       {(addTransaction, { loading, error, data }) => {
@@ -194,5 +194,6 @@ const Form = styled.form`
 export default NewTransactionForm
 
 NewTransactionForm.propTypes = {
-  category: propTypes.object
+  category: propTypes.object,
+  budget_id: propTypes.string
 }

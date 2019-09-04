@@ -31,8 +31,8 @@ export const GET_USER = gql`
 `
 
 export const GET_BUDGETS = gql`
-  query getBudgetsForUser($_id: String!) {
-    getBudgetsForUser(_id: $_id) {
+  query getBudgetsForUser($creator: String!) {
+    getBudgetsForUser(creator: $creator) {
       _id
       month
     }
@@ -132,14 +132,23 @@ export const UPDATE_CATEGORY = gql`
 `
 
 export const ADD_TRANSACTION = gql`
-  mutation($category_id: String!, $amount: Float!, $debit: Boolean!, $credit: Boolean!, $description: String!) {
+  mutation(
+    $category_id: String!
+    $budget_id: String!
+    $amount: Float!
+    $debit: Boolean!
+    $credit: Boolean!
+    $description: String!
+  ) {
     addTransaction(
       category_id: $category_id
+      budget_id: $budget_id
       amount: $amount
       debit: $debit
       credit: $credit
       description: $description
     ) {
+      budget_id
       amount
       _id
       category_id
@@ -159,6 +168,7 @@ export const GET_TRANSACTIONS = gql`
       description
       category_balance
       created_at
+      budget_id
     }
   }
 `

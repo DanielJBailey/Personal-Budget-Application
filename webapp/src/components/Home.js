@@ -26,7 +26,7 @@ const Home = () => {
 
   useEffect(() => {
     if (user._id) {
-      getBudgets({ variables: { _id: user._id } })
+      getBudgets({ variables: { creator: user._id } })
     }
   }, [user])
 
@@ -145,7 +145,18 @@ const Home = () => {
                     Create New Budget
                   </NewBudget>
                   {currentBudget && (
-                    <Mutation mutation={DELETE_BUDGET} variables={{ creator: user._id, _id: currentBudget._id }}>
+                    <Mutation
+                      mutation={DELETE_BUDGET}
+                      refetchQueries={() => {
+                        return [
+                          {
+                            query: GET_BUDGETS,
+                            variables: { creator: user._id }
+                          }
+                        ]
+                      }}
+                      variables={{ creator: user._id, _id: currentBudget._id }}
+                    >
                       {deleteBudget => {
                         return (
                           <Trash onClick={() => handleDeleteConfirm(deleteBudget)}>

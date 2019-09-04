@@ -157,7 +157,7 @@ const Category = ({
               <TransactionList transactions={currentTransactions} />
             </TransactionContainer>
             <StatsContainer>
-              <NewTransactionForm category={category} />
+              <NewTransactionForm budget_id={category.budget_id} category={category} />
             </StatsContainer>
           </BodyContainer>
         </Container>

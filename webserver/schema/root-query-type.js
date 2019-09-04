@@ -69,10 +69,10 @@ const RootQuery = new GraphQLObjectType({
     getBudgetsForUser: {
       type: new GraphQLList(BudgetType),
       args: {
-        _id: { type: GraphQLString }
+        creator: { type: GraphQLString }
       },
-      resolve: async (parent, { _id }) => {
-        const budgets = await BudgetModel.find({ creator: _id });
+      resolve: async (parent, { creator }) => {
+        const budgets = await BudgetModel.find({ creator });
         return budgets;
       }
     }

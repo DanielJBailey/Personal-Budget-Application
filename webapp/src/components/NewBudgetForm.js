@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styled from '@emotion/styled'
 import { Mutation } from 'react-apollo'
 import { useAuth } from '../context/auth'
-import { ADD_BUDGET } from '../queries/index'
+import { ADD_BUDGET, GET_BUDGETS } from '../queries/index'
 import propTypes from 'prop-types'
 import alert from 'sweetalert2'
 
@@ -69,7 +69,18 @@ const NewBudgetForm = ({ setBudgets, closeForm, budgets }) => {
   }
 
   return (
-    <Mutation mutation={ADD_BUDGET} variables={{ creator: user._id, month: `${formValues.month}-${formValues.year}` }}>
+    <Mutation
+      mutation={ADD_BUDGET}
+      refetchQueries={() => {
+        return [
+          {
+            query: GET_BUDGETS,
+            variables: { creator: user._id }
+          }
+        ]
+      }}
+      variables={{ creator: user._id, month: `${formValues.month}-${formValues.year}` }}
+    >
       {(addBudget, { error }) => {
         if (error) {
           setShowErrors(true)

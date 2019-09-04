@@ -22,6 +22,7 @@ const mutation = new GraphQLObjectType({
     addTransaction: {
       type: TransactionType,
       args: {
+        budget_id: { type: GraphQLString },
         category_id: { type: GraphQLString },
         amount: { type: GraphQLFloat },
         credit: { type: GraphQLBoolean },
@@ -29,7 +30,7 @@ const mutation = new GraphQLObjectType({
         description: { type: GraphQLString },
         date: { type: GraphQLString }
       },
-      resolve: async (parentValue, { category_id, amount, credit, debit, description, date }) => {
+      resolve: async (parentValue, { budget_id, category_id, amount, credit, debit, description, date }) => {
         const category = await CategoryModel.findOne({ _id: category_id });
         let category_balance;
         if (credit) {
@@ -37,6 +38,7 @@ const mutation = new GraphQLObjectType({
           category.current_balance += amount;
           category.save();
           return new TransactionModel({
+            budget_id,
             category_id,
             amount,
             credit,
@@ -50,6 +52,7 @@ const mutation = new GraphQLObjectType({
           category.current_balance -= amount;
           category.save();
           return new TransactionModel({
+            budget_id,
             category_id,
             amount,
             credit,
