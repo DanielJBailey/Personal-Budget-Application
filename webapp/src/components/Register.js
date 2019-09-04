@@ -46,6 +46,7 @@ const Register = ({ history }) => {
         if (data && data.addUser) {
           const { token, _id, username } = data.addUser
           await window.localStorage.removeItem('budget-auth')
+          await window.localStorage.removeItem('current-budget')
           await window.localStorage.setItem('budget-auth', token)
           setUser({ username, _id })
           history.push('/')

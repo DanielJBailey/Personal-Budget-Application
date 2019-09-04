@@ -33,6 +33,7 @@ const Login = ({ history }) => {
         if (data && data.signInUser) {
           const { token, _id, username } = data.signInUser
           await window.localStorage.removeItem('budget-auth')
+          await window.localStorage.removeItem('current-budget')
           await window.localStorage.setItem('budget-auth', token)
           setUser({ username, _id })
           history.push('/')

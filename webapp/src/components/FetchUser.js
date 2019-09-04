@@ -38,6 +38,7 @@ export const FetchUser = ({ children }) => {
   useEffect(() => {
     if (data && data.getUser === null) {
       window.localStorage.removeItem('budget-auth')
+      window.localStorage.removeItem('current-budget')
       setFinished(true)
       setUserSet(true)
       setUser({})

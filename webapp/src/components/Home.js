@@ -6,7 +6,6 @@ import { GET_BUDGETS, DELETE_BUDGET } from '../queries/index'
 import { Mutation } from 'react-apollo'
 import styled from '@emotion/styled'
 import { useAuth } from '../context/auth'
-import { useBudget } from '../context/budget'
 import { ScaleLoader } from 'react-spinners'
 import alert from 'sweetalert2'
 import NewBudgetForm from './NewBudgetForm'
@@ -21,8 +20,8 @@ const Home = () => {
   const [categories, setCategories] = useState([])
   const [options, setOptions] = useState([])
   const [addingBudget, setAddingBudget] = useState(false)
+  const [currentBudget, setCurrentBudget] = useState({})
   const { user } = useAuth()
-  const { currentBudget, setCurrentBudget } = useBudget()
 
   useEffect(() => {
     if (user._id) {
@@ -171,7 +170,7 @@ const Home = () => {
               </HeaderContainer>
               <BodyContainer>
                 <BudgetContainer>
-                  <CategoryList categories={categories} setCategories={setCategories} />
+                  <CategoryList categories={categories} currentBudget={currentBudget} setCategories={setCategories} />
                 </BudgetContainer>
                 <StatsContainer>
                   <NewCategoryForm categories={categories} setCategories={setCategories} />

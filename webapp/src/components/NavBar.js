@@ -9,6 +9,7 @@ const NavBar = ({ history }) => {
 
   const logOutUser = async () => {
     await window.localStorage.removeItem('budget-auth')
+    await window.localStorage.removeItem('current-budget')
     await setUser({})
     history.push('/login')
   }

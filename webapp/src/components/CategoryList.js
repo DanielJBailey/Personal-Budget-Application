@@ -4,17 +4,15 @@ import { GET_CATEGORIES } from '../queries/index'
 import styled from '@emotion/styled'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/auth'
-import { useBudget } from '../context/budget'
 import propTypes from 'prop-types'
 import IndividualCategory from './IndividualCategory'
 
-const CategoryList = ({ categories, setCategories }) => {
+const CategoryList = ({ categories, setCategories, currentBudget }) => {
   const [getCategories, { loading, data }] = useLazyQuery(GET_CATEGORIES)
   const { user } = useAuth()
-  const { currentBudget } = useBudget()
 
   useEffect(() => {
-    if (user._id && currentBudget._id) {
+    if (user._id && currentBudget) {
       getCategories({ variables: { user_id: user._id, budget_id: currentBudget._id } })
     }
   }, [user, currentBudget])
@@ -45,5 +43,6 @@ export default CategoryList
 
 CategoryList.propTypes = {
   categories: propTypes.array,
-  setCategories: propTypes.func
+  setCategories: propTypes.func,
+  currentBudget: propTypes.object
 }

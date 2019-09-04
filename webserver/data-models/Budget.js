@@ -5,7 +5,7 @@ const { TransactionModel } = require('./Transaction');
 const BudgetSchema = new Schema({
   id: { type: SchemaTypes.ObjectId },
   creator: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  month: { type: String, required: true, unique: true }
+  month: { type: String, required: true }
 });
 
 BudgetSchema.pre('findOneAndDelete', function(next) {
