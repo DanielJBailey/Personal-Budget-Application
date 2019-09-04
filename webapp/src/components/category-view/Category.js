@@ -141,11 +141,23 @@ const Category = ({
             </ButtonContainer>
           </HeaderContainer>
           <HR />
-          {isUserCategory && (
+          {category.name === 'Income' && (
             <BalanceContainer>
-              <StartingBalance current={category.current_balance}>
+              <CurrentBalance current={category.current_balance}>
+                Current Monthly Income: <span className='amount'>{renderCurrency(category.current_balance)}</span>
+              </CurrentBalance>
+            </BalanceContainer>
+          )}
+          {category.name !== 'Income' && (
+            <BalanceContainer>
+              <CurrentBalance current={category.current_balance}>
                 Current Balance: <span className='amount'>{renderCurrency(category.current_balance)}</span>
-              </StartingBalance>
+              </CurrentBalance>
+              {isUserCategory && (
+                <StartingAmount>
+                  Starting Balance: <span className='amount'>{renderCurrency(category.starting_balance)}</span>
+                </StartingAmount>
+              )}
             </BalanceContainer>
           )}
           <BodyContainer>
@@ -162,7 +174,12 @@ const Category = ({
   )
 }
 
-const StartingBalance = styled.h3`
+const StartingAmount = styled.h3`
+  font-size: 16px;
+  font-weight: normal;
+`
+
+const CurrentBalance = styled.h3`
   font-size: 22px;
   font-weight: bold;
   display: flex;
@@ -239,6 +256,7 @@ const BalanceContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
   padding: 8px;
 `
 
