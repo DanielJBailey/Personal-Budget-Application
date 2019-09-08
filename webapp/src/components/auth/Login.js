@@ -1,95 +1,97 @@
-import React, { useState, useEffect } from 'react'
-import { withRouter, Link } from 'react-router-dom'
-import styled from '@emotion/styled'
-import { Mutation } from 'react-apollo'
-import { SIGNIN_USER } from '../../queries/index'
-import propTypes from 'prop-types'
-import { useAuth } from '../../context/auth'
+import React, { useState, useEffect } from 'react';
+import { withRouter, Link } from 'react-router-dom';
+import styled from '@emotion/styled';
+import { Mutation } from 'react-apollo';
+import { SIGNIN_USER } from '../../queries/index';
+import propTypes from 'prop-types';
+import { useAuth } from '../../context/auth';
 
 const initialState = {
   username: '',
   password: ''
-}
+};
 
-const Login = ({ history }) => {
-  const [formValues, setFormValues] = useState({ ...initialState })
-  const [showErrors, setShowErrors] = useState(false)
-  const { user, setUser } = useAuth()
+export const Login = ({ history }) => {
+  const [formValues, setFormValues] = useState({ ...initialState });
+  const [showErrors, setShowErrors] = useState(false);
+  const { user, setUser } = useAuth();
 
   useEffect(() => {
     if (user._id) {
-      history.goBack()
+      history.goBack();
     }
-  }, [])
+  }, []);
 
   const handleChange = ({ target: { name, value } }) => {
-    setFormValues({ ...formValues, [name]: value })
-  }
+    setFormValues({ ...formValues, [name]: value });
+  };
 
   const handleSubmit = async (e, signInUser) => {
-    e.preventDefault()
+    e.preventDefault();
     signInUser()
       .then(async ({ data }) => {
         if (data && data.signInUser) {
-          const { token, _id, username } = data.signInUser
-          await window.localStorage.removeItem('budget-auth')
-          await window.localStorage.removeItem('current-budget')
-          await window.localStorage.setItem('budget-auth', token)
-          setUser({ username, _id })
-          history.push('/')
+          const { token, _id, username } = data.signInUser;
+          await window.localStorage.removeItem('budget-auth');
+          await window.localStorage.removeItem('current-budget');
+          await window.localStorage.setItem('budget-auth', token);
+          setUser({ username, _id });
+          history.push('/');
         }
       })
-      .catch(e => {})
-  }
+      .catch(e => {});
+  };
 
   const renderErrors = errors => {
-    return errors.map((err, i) => <Error key={i}>{err.message}</Error>)
-  }
+    return errors.map((err, i) => <Error key={i}>{err.message}</Error>);
+  };
 
   return (
     <Container>
-      <h1>Sign In</h1>
-      <h2>Welcome back, we missed you.</h2>
+      <h1 data-testid="sign-in-header">Sign In</h1>
+      <h2 data-testid="welcome">Welcome back, we missed you.</h2>
       <Mutation mutation={SIGNIN_USER} variables={formValues}>
         {(signInUser, { data, loading, error }) => {
           if (error) {
-            setShowErrors(true)
+            setShowErrors(true);
           } else {
-            setShowErrors(false)
+            setShowErrors(false);
           }
           return (
             <>
               {error && showErrors && renderErrors(error.graphQLErrors)}
               <Form onSubmit={e => handleSubmit(e, signInUser)}>
                 <input
-                  aria-label='username field'
-                  autoComplete='username'
-                  name='username'
+                  aria-label="username field"
+                  autoComplete="username"
+                  name="username"
                   onChange={handleChange}
-                  placeholder='Username'
+                  placeholder="Username"
                   required
+                  data-testid="username"
                 />
                 <input
-                  aria-label='password field'
-                  autoComplete='password'
-                  name='password'
+                  aria-label="password field"
+                  autoComplete="password"
+                  name="password"
                   onChange={handleChange}
-                  placeholder='Password'
+                  data-testid="password"
+                  placeholder="Password"
                   required
-                  type='password'
+                  type="password"
                 />
-                <Submit type='submit'>Submit</Submit>
+                <Submit type="submit">Submit</Submit>
               </Form>
             </>
-          )
+          );
         }}
       </Mutation>
-      <h3>
-        {"Don't have an account?"} <Link to='/register'>Sign up</Link>
+      <h3 data-testid="sign-up-link">
+        {"Don't have an account?"} <Link to="/register">Sign up</Link>
       </h3>
     </Container>
-  )
-}
+  );
+};
 
 export const Submit = styled.button`
   width: 100%;
@@ -104,7 +106,7 @@ export const Submit = styled.button`
   &:hover {
     opacity: 0.9;
   }
-`
+`;
 
 export const Container = styled.div`
   height: 100%;
@@ -158,7 +160,7 @@ export const Container = styled.div`
   @media (max-width: 425px) {
     padding: 2em;
   }
-`
+`;
 
 export const Form = styled.form`
   display: flex;
@@ -177,7 +179,7 @@ export const Form = styled.form`
       margin-top: 12px;
     }
   }
-`
+`;
 
 export const Error = styled.div`
   background-color: ${props => props.theme.errorBackground};
@@ -188,10 +190,10 @@ export const Error = styled.div`
   border-radius: 5px;
   margin: 0 0 12px 0;
   font-size: 14px;
-`
+`;
 
-export default withRouter(Login)
+export default withRouter(Login);
 
 Login.propTypes = {
   history: propTypes.object
-}
+};
