@@ -1,74 +1,74 @@
-import React, { useState, useEffect } from 'react';
-import { withRouter, Link } from 'react-router-dom';
-import { Mutation } from 'react-apollo';
-import { SIGNUP_USER } from '../../queries/index';
-import propTypes from 'prop-types';
-import { useAuth } from '../../context/auth';
-import { Form, Container, Submit, Error } from './Login';
+import React, { useState, useEffect } from 'react'
+import { withRouter, Link } from 'react-router-dom'
+import { Mutation } from 'react-apollo'
+import { SIGNUP_USER } from '../../queries/index'
+import propTypes from 'prop-types'
+import { useAuth } from '../../context/auth'
+import { Form, Container, Submit, Error } from './Login'
 
 const initialState = {
   username: '',
   password: '',
   passwordConfirmation: ''
-};
+}
 
 const Register = ({ history }) => {
-  const [formValues, setFormValues] = useState({ ...initialState });
-  const [showErrors, setShowErrors] = useState(false);
-  const [errors, setErrors] = useState([]);
-  const { user, setUser } = useAuth();
+  const [formValues, setFormValues] = useState({ ...initialState })
+  const [showErrors, setShowErrors] = useState(false)
+  const [errors, setErrors] = useState([])
+  const { user, setUser } = useAuth()
 
   useEffect(() => {
     if (user._id) {
-      history.goBack();
+      history.goBack()
     }
-  }, []);
+  }, [])
 
   const handleChange = ({ target: { name, value } }) => {
-    setFormValues({ ...formValues, [name]: value });
-  };
+    setFormValues({ ...formValues, [name]: value })
+  }
 
   const formValidation = () => {
-    const { password, passwordConfirmation } = formValues;
+    const { password, passwordConfirmation } = formValues
     if (password !== passwordConfirmation) {
-      setErrors([...errors, { message: 'Passwords do not match.' }]);
+      setErrors([...errors, { message: 'Passwords do not match.' }])
     }
     if (errors.length > 0) {
-      setShowErrors(true);
-      return false;
-    } else return true;
-  };
+      setShowErrors(true)
+      return false
+    } else return true
+  }
 
   const handleSubmit = async (e, signUpUser) => {
-    e.preventDefault();
+    e.preventDefault()
     if (formValidation()) {
       signUpUser().then(async ({ data }) => {
         if (data && data.addUser) {
-          const { token, _id, username } = data.addUser;
-          await window.localStorage.removeItem('budget-auth');
-          await window.localStorage.removeItem('current-budget');
-          await window.localStorage.setItem('budget-auth', token);
-          setUser({ username, _id });
-          history.push('/');
+          const { token, _id, username } = data.addUser
+          await window.localStorage.removeItem('budget-auth')
+          await window.localStorage.removeItem('current-budget')
+          await window.localStorage.setItem('budget-auth', token)
+          setUser({ username, _id })
+          history.push('/')
         }
-      });
+      })
     }
-  };
+  }
 
   const renderErrors = errors => {
-    return errors.map((err, i) => <Error key={i}>{err.message}</Error>);
-  };
+    return errors.map((err, i) => <Error key={i}>{err.message}</Error>)
+  }
 
   return (
     <Container>
-      <h1 data-testid="register-header">Register</h1>
-      <h2 data-testid="intro">{"You won't regret this decision."}</h2>
+      <h1 data-testid='register-header'>Register</h1>
+      <h2 data-testid='intro'>{"You won't regret this decision."}</h2>
       <Mutation mutation={SIGNUP_USER} variables={formValues}>
         {(signUpUser, { data, loading, error }) => {
           if (error) {
-            setShowErrors(true);
+            setShowErrors(true)
           } else {
-            setShowErrors(false);
+            setShowErrors(false)
           }
           return (
             <>
@@ -76,51 +76,51 @@ const Register = ({ history }) => {
               {showErrors && renderErrors(errors)}
               <Form onSubmit={e => handleSubmit(e, signUpUser)}>
                 <input
-                  aria-label="username field"
-                  autoComplete="username"
-                  name="username"
+                  aria-label='username field'
+                  autoComplete='username'
+                  data-testid='username'
+                  name='username'
                   onChange={handleChange}
-                  placeholder="Username:"
+                  placeholder='Username:'
                   required
-                  data-testid="username"
                 />
                 <input
-                  aria-label="password field"
-                  autoComplete="password"
-                  name="password"
+                  aria-label='password field'
+                  autoComplete='password'
+                  data-testid='password'
+                  name='password'
                   onChange={handleChange}
-                  placeholder="Password:"
+                  placeholder='Password:'
                   required
-                  data-testid="password"
-                  type="password"
+                  type='password'
                 />
                 <input
-                  aria-label="password confirmation field"
-                  autoComplete="password confirmation"
-                  name="passwordConfirmation"
+                  aria-label='password confirmation field'
+                  autoComplete='password confirmation'
+                  data-testid='password-confirmation'
+                  name='passwordConfirmation'
                   onChange={handleChange}
-                  placeholder="Password Confirm:"
+                  placeholder='Password Confirm:'
                   required
-                  data-testid="password-confirmation"
-                  type="password"
+                  type='password'
                 />
-                <Submit type="submit" data-testid="submit">
+                <Submit data-testid='submit' type='submit'>
                   Submit
                 </Submit>
               </Form>
             </>
-          );
+          )
         }}
       </Mutation>
-      <h3 data-testid="login-link">
-        {'Already have an account?'} <Link to="/login">Sign in</Link>
+      <h3 data-testid='login-link'>
+        {'Already have an account?'} <Link to='/login'>Sign in</Link>
       </h3>
     </Container>
-  );
-};
+  )
+}
 
-export default withRouter(Register);
+export default withRouter(Register)
 
 Register.propTypes = {
   history: propTypes.object
-};
+}

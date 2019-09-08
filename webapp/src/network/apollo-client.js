@@ -1,23 +1,23 @@
-import { HttpLink } from 'apollo-link-http';
-import { onError } from 'apollo-link-error';
-import { withClientState } from 'apollo-link-state';
-import { ApolloLink, Observable } from 'apollo-link';
-import ApolloClient from 'apollo-client/ApolloClient';
-import { InMemoryCache } from 'apollo-cache-inmemory';
+import { HttpLink } from 'apollo-link-http'
+import { onError } from 'apollo-link-error'
+import { withClientState } from 'apollo-link-state'
+import { ApolloLink, Observable } from 'apollo-link'
+import ApolloClient from 'apollo-client/ApolloClient'
+import { InMemoryCache } from 'apollo-cache-inmemory'
 
-const SERVER_URL = 'http://localhost:8000/graphql';
+const SERVER_URL = 'http://localhost:8000/graphql'
 
 const request = async operation => {
-  let headers = {};
-  operation.setContext({ headers });
-};
+  let headers = {}
+  operation.setContext({ headers })
+}
 
-const cache = new InMemoryCache();
+const cache = new InMemoryCache()
 
 const requestLink = new ApolloLink(
   (operation, forward) =>
     new Observable(observer => {
-      let handle;
+      let handle
       Promise.resolve(operation)
         .then(oper => request(oper))
         .then(() => {
@@ -25,24 +25,24 @@ const requestLink = new ApolloLink(
             next: observer.next.bind(observer),
             error: observer.error.bind(observer),
             complete: observer.complete.bind(observer)
-          });
+          })
         })
-        .catch(observer.error.bind(observer));
+        .catch(observer.error.bind(observer))
 
       return () => {
-        if (handle) handle.unsubscribe();
-      };
+        if (handle) handle.unsubscribe()
+      }
     })
-);
+)
 
 export const client = new ApolloClient({
   link: ApolloLink.from([
     onError(({ graphQLErrors, networkError }) => {
       if (graphQLErrors) {
-        console.warn('GQL Errors', graphQLErrors);
+        console.warn('GQL Errors', graphQLErrors)
       }
       if (networkError) {
-        console.error('Network Error', networkError);
+        console.error('Network Error', networkError)
       }
     }),
     requestLink,
@@ -53,8 +53,8 @@ export const client = new ApolloClient({
       resolvers: {
         Mutation: {
           updateNetworkStatus: (_, { isConnected }, { cache }) => {
-            cache.writeData({ data: { isConnected } });
-            return null;
+            cache.writeData({ data: { isConnected } })
+            return null
           }
         }
       },
@@ -66,6 +66,6 @@ export const client = new ApolloClient({
     })
   ]),
   cache
-});
+})
 
-window.__APOLLO_CLIENT__ = client;
+window.__APOLLO_CLIENT__ = client
